@@ -2,12 +2,16 @@
 
 import os
 import stat
+import shutil
 import zipfile
 from io import BytesIO as StringIO
 
 PACKAGE_NAME = "grue"
 PACKAGE_DIRECTORY = PACKAGE_NAME
 PYTHON_DIRECTIVE = "#!/usr/bin/env python3"
+
+# Copy the src/grue directory to the project directory
+shutil.copytree("src/grue", PACKAGE_DIRECTORY)
 
 PACKED = StringIO()
 PACKED_WRITER = zipfile.ZipFile(PACKED, "w", zipfile.ZIP_DEFLATED)
@@ -36,3 +40,6 @@ with open(PYTHON_FILE, "wb") as f:
     f.write(PACKED.getvalue())
 
 os.chmod(PYTHON_FILE, stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH)
+
+# Delete the copied grue directory
+shutil.rmtree(PACKAGE_DIRECTORY)
