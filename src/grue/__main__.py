@@ -15,6 +15,8 @@ class Memory:
         self.static: int = self.read_word(0x0E)
         self.high: int = self.read_word(0x04)
 
+        self._version_check()
+
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
 
@@ -24,6 +26,10 @@ class Memory:
         """Reads a word (2 bytes) from the specified memory address."""
 
         return (self.data[address] << 8) | self.data[address + 1]
+
+    def _version_check(self) -> None:
+        if self.version not in range(1, 9):
+            raise RuntimeError(f"unsupported Z-Machine version of {self.version} found")
 
 
 class Loader:

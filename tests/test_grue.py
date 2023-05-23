@@ -1,5 +1,6 @@
 """Tests for Grue execution."""
 
+import pytest
 from expects import be_a, contain, equal, expect
 
 
@@ -53,3 +54,17 @@ def test_determine_zcode_version(zork1_z3) -> None:
     memory = Memory(data)
 
     expect(memory.version).to(equal(3))
+
+
+def test_invalid_version_not_allowed(invalid_version_zcode_file) -> None:
+    """Grue raises an an error for unsupported versions."""
+
+    from grue.__main__ import Memory
+
+    with open(invalid_version_zcode_file, "rb") as file:
+        zcode_data = file.read()
+
+    with pytest.raises(RuntimeError) as exc_info:
+        Memory(zcode_data)
+
+    expect(str(exc_info.value)).to(contain("unsupported Z-Machine version of 9 found"))
