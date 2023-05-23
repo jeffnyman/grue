@@ -41,3 +41,15 @@ def test_read_word(zork1_z3) -> None:
 
     expect(memory.read_word(0x0E)).to(equal(memory.static))
     expect(memory.read_word(0x04)).to(equal(memory.high))
+
+
+def test_determine_zcode_version(zork1_z3) -> None:
+    """Grue reads the zcode version from memory."""
+
+    from grue.__main__ import Loader, Memory
+
+    data = Loader.load(str(zork1_z3))
+
+    memory = Memory(data)
+
+    expect(memory.version).to(equal(3))

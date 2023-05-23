@@ -9,7 +9,9 @@ class Memory:
     def __init__(self, data: bytes) -> None:
         self.data = data
 
-        self.dynamic = 0
+        self.version: int = self.read_byte(0x00)
+
+        self.dynamic: int = 0
         self.static: int = self.read_word(0x0E)
         self.high: int = self.read_word(0x04)
 
