@@ -44,6 +44,13 @@ max-returns-amount = 5
 # E203: Whitespace before ":"
 extend-ignore = ["ANN101", "D107", "D202", "D212", "E203"]
 
+# ANN001: Missing type annotation for function argument.
+# D104: Missing docstring in public package.
+per-file-ignores = [
+    "*/__init__.py:D104",
+    "tests/*:ANN001",
+]
+
 [tool.pytest.ini_options]
 addopts = "--spec"
 spec_test_format = "{result} {docstring_summary}"
