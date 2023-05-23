@@ -9,6 +9,16 @@ class Memory:
     def __init__(self, data: bytes) -> None:
         self.data = data
 
+    def read_byte(self, address: int) -> int:
+        """Reads a byte from the specified memory address."""
+
+        return self.data[address]
+
+    def read_word(self, address: int) -> int:
+        """Reads a word (2 bytes) from the specified memory address."""
+
+        return (self.data[address] << 8) | self.data[address + 1]
+
 
 class Loader:
     """Handles loading a file from the command line and reading it as binary."""
