@@ -17,6 +17,11 @@ class Memory:
 
         self._version_check()
 
+    def details(self) -> None:
+        print(f"zcode version: {self.version}")
+        print(f"Static memory: {hex(self.static)}")
+        print(f"High memory: {hex(self.high)}")
+
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
 
@@ -49,7 +54,8 @@ def main() -> int:
     print("GRUE Z-Machine Interpreter")
 
     data = Loader.load(sys.argv[1])
-    Memory(data)
+    memory = Memory(data)
+    memory.details()
 
     return 0
 
