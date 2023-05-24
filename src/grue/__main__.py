@@ -68,19 +68,25 @@ class Memory:
     def _zcode_size_checks(self) -> None:
         """Checks for contraints related to allowed zcode program size."""
 
-        total_size = len(self.data)
+        size_limits = {
+            1: 128,
+            2: 128,
+            3: 128,
+            4: 256,
+            5: 256,
+            6: 512,
+            7: 512,
+            8: 512,
+            9: 512,
+        }
 
-        if self.version <= 3:
-            if not total_size <= 128 * 1024:
-                raise RuntimeError("program exceeds size limit for versions 1 to 3")
+        total_size: int = len(self.data)
+        size_limit: int = size_limits[self.version]
 
-        if self.version in [4, 5]:
-            if not total_size <= 256 * 1024:
-                raise RuntimeError("program exceeds size limit for versions 4 to 5")
-
-        if self.version > 5:
-            if not total_size <= 512 * 1024:
-                raise RuntimeError("program exceeds size limit for versions 5 and up")
+        if total_size > size_limit * 1024:
+            raise RuntimeError(
+                f"program exceeds size limit of {size_limit}KB for version {self.version}"
+            )
 
 
 class Loader:
