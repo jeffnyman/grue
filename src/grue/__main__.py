@@ -19,9 +19,12 @@ class Memory:
         self.routine_offset: int = self.read_word(0x28)
         self.strings_offset: int = self.read_word(0x2A)
 
+        self.pc: int = 0
+
         self._version_check()
         self._memory_checks()
         self._zcode_size_checks()
+        self._read_starting_address()
 
     def details(self) -> None:
         """Display information of initial memory configuration."""
@@ -63,6 +66,14 @@ class Memory:
             return 4 * address + (8 * self.strings_offset)
 
         return 8 * address
+
+    def _read_starting_address(self) -> None:
+        """Read address where zcode execution begins."""
+
+        if self.version != 6:
+            self.pc = self.read_word(0x06)
+        else:
+            self.pc = self.read_packed(self.read_word(0x06), True)
 
     def _version_check(self) -> None:
         if self.version not in range(1, 9):

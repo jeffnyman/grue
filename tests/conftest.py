@@ -18,6 +18,15 @@ def zork1_z3(pytestconfig) -> Path:
 
 
 @pytest.fixture()
+def zork1_z6(pytestconfig) -> Path:
+    """Provides a Z-Machine version 6 Zork program."""
+
+    tests_dir = pytestconfig.rootdir / "tests"
+    fixtures_dir = tests_dir / "fixtures"
+    return fixtures_dir / "zork1.z6"
+
+
+@pytest.fixture()
 def invalid_version_zcode_file(pytestconfig) -> Generator[Path, None, None]:
     """Provides a mock zcode file for testing."""
 

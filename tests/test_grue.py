@@ -69,7 +69,7 @@ def test_determine_zcode_release_number(zork1_z3) -> None:
 
 
 def test_determine_zcode_serial_code(zork1_z3) -> None:
-    """Grue reads the zcode release number from memory."""
+    """Grue reads the zcode serial code from memory."""
 
     from grue.__main__ import Loader, Memory
 
@@ -92,3 +92,27 @@ def test_invalid_version_not_allowed(invalid_version_zcode_file) -> None:
         Memory(zcode_data)
 
     expect(str(exc_info.value)).to(contain("unsupported Z-Machine version of 9 found"))
+
+
+def test_determine_starting_address(zork1_z3) -> None:
+    """Grue reads starting address for zcode execution (versions 1 to 5)."""
+
+    from grue.__main__ import Loader, Memory
+
+    data = Loader.load(str(zork1_z3))
+
+    memory = Memory(data)
+
+    expect(hex(memory.pc)).to(equal(hex(0x4F05)))
+
+
+def test_determine_starting_main_routine(zork1_z6) -> None:
+    """Grue reads starting main routine for zcode execution (version 6)."""
+
+    from grue.__main__ import Loader, Memory
+
+    data = Loader.load(str(zork1_z6))
+
+    memory = Memory(data)
+
+    expect(hex(memory.pc)).to(equal(hex(0x7AA4)))
