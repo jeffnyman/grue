@@ -76,6 +76,8 @@ class Memory:
             self.pc = self.read_packed(self.read_word(0x06), True)
 
     def _version_check(self) -> None:
+        """Checks a valid zcode program range."""
+
         if self.version not in range(1, 9):
             raise RuntimeError(f"unsupported Z-Machine version of {self.version} found")
 
