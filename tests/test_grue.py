@@ -56,6 +56,30 @@ def test_determine_zcode_version(zork1_z3) -> None:
     expect(memory.version).to(equal(3))
 
 
+def test_determine_zcode_release_number(zork1_z3) -> None:
+    """Grue reads the zcode release number from memory."""
+
+    from grue.__main__ import Loader, Memory
+
+    data = Loader.load(str(zork1_z3))
+
+    memory = Memory(data)
+
+    expect(memory.release_number).to(equal(88))
+
+
+def test_determine_zcode_serial_code(zork1_z3) -> None:
+    """Grue reads the zcode release number from memory."""
+
+    from grue.__main__ import Loader, Memory
+
+    data = Loader.load(str(zork1_z3))
+
+    memory = Memory(data)
+
+    expect(int(memory.serial_code.decode("utf-8"))).to(equal(840726))
+
+
 def test_invalid_version_not_allowed(invalid_version_zcode_file) -> None:
     """Grue raises an an error for unsupported versions."""
 

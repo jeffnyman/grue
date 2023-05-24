@@ -10,6 +10,8 @@ class Memory:
         self.data = data
 
         self.version: int = self.read_byte(0x00)
+        self.release_number: int = self.read_word(0x2)
+        self.serial_code: bytes = self.read_bytes(0x12, 6)
 
         self.dynamic: int = 0
         self.static: int = self.read_word(0x0E)
@@ -23,6 +25,8 @@ class Memory:
         """Display information of initial memory configuration."""
 
         print(f"zcode version: {self.version}")
+        print(f"Release number: {self.release_number}")
+        print(f"Serial code: {self.serial_code.decode('utf-8')}")
         print(f"Static memory: {hex(self.static)}")
         print(f"High memory: {hex(self.high)}")
 
@@ -30,6 +34,11 @@ class Memory:
         """Reads a byte from the specified memory address."""
 
         return self.data[address]
+
+    def read_bytes(self, address: int, length: int) -> bytes:
+        """Reeads a series of bytes starting at a memory address."""
+
+        return self.data[address : address + length]
 
     def read_word(self, address: int) -> int:
         """Reads a word (2 bytes) from the specified memory address."""
