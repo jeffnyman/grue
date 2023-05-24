@@ -1,7 +1,7 @@
 """Tests for Grue execution."""
 
-import pytest
 from expects import be_a, contain, equal, expect
+import pytest
 
 
 def test_load_zcode_program(zork1_z3, monkeypatch, capsys) -> None:

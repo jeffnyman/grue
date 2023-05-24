@@ -1,8 +1,9 @@
 """Configuration file for providing test fixtures."""
 
-from pathlib import Path
 import os
 import shutil
+from pathlib import Path
+
 import pytest
 
 

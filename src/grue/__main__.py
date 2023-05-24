@@ -20,6 +20,8 @@ class Memory:
         self._zcode_size_checks()
 
     def details(self) -> None:
+        """Display information of initial memory configuration."""
+
         print(f"zcode version: {self.version}")
         print(f"Static memory: {hex(self.static)}")
         print(f"High memory: {hex(self.high)}")
@@ -39,6 +41,8 @@ class Memory:
             raise RuntimeError(f"unsupported Z-Machine version of {self.version} found")
 
     def _memory_checks(self) -> None:
+        """Checks for specific memory contraints related to the memory map."""
+
         header_size: int = 64
 
         # There is a minimum size to a zcode program in that it must be able
@@ -62,6 +66,8 @@ class Memory:
             raise RuntimeError("memory exceeds addressable memory space")
 
     def _zcode_size_checks(self) -> None:
+        """Checks for contraints related to allowed zcode program size."""
+
         total_size = len(self.data)
 
         if self.version <= 3:
