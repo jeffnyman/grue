@@ -3,6 +3,7 @@
 import os
 import shutil
 from pathlib import Path
+from typing import Generator
 
 import pytest
 
@@ -17,7 +18,7 @@ def zork1_z3(pytestconfig) -> Path:
 
 
 @pytest.fixture()
-def invalid_version_zcode_file(pytestconfig) -> Path:
+def invalid_version_zcode_file(pytestconfig) -> Generator[Path, None, None]:
     """Provides a mock zcode file for testing."""
 
     original_file_path = pytestconfig.rootdir / "tests" / "fixtures" / "zork1.z3"
