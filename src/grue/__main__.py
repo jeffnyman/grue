@@ -16,6 +16,8 @@ class Memory:
         self.dynamic: int = 0
         self.static: int = self.read_word(0x0E)
         self.high: int = self.read_word(0x04)
+        self.routine_offset: int = self.read_word(0x28)
+        self.strings_offset: int = self.read_word(0x2A)
 
         self._version_check()
         self._memory_checks()
@@ -44,6 +46,23 @@ class Memory:
         """Reads a word (2 bytes) from the specified memory address."""
 
         return (self.data[address] << 8) | self.data[address + 1]
+
+    def read_packed(self, address: int, is_routine: bool) -> int:
+        """Reads a packed address from memory, accounting for offsets."""
+
+        if self.version < 4:
+            return 2 * address
+
+        if self.version < 6:
+            return 4 * address
+
+        if self.version < 8 and is_routine:
+            return 4 * address + (8 * self.routine_offset)
+
+        if self.version < 8:
+            return 4 * address + (8 * self.strings_offset)
+
+        return 8 * address
 
     def _version_check(self) -> None:
         if self.version not in range(1, 9):
