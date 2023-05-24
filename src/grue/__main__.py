@@ -17,6 +17,7 @@ class Memory:
 
         self._version_check()
         self._memory_checks()
+        self._zcode_size_checks()
 
     def details(self) -> None:
         print(f"zcode version: {self.version}")
@@ -59,6 +60,21 @@ class Memory:
 
         if (dynamic_size + self.static) > 65534:
             raise RuntimeError("memory exceeds addressable memory space")
+
+    def _zcode_size_checks(self) -> None:
+        total_size = len(self.data)
+
+        if self.version <= 3:
+            if not total_size <= 128 * 1024:
+                raise RuntimeError("program exceeds size limit for versions 1 to 3")
+
+        if self.version in [4, 5]:
+            if not total_size <= 256 * 1024:
+                raise RuntimeError("program exceeds size limit for versions 4 to 5")
+
+        if self.version > 5:
+            if not total_size <= 512 * 1024:
+                raise RuntimeError("program exceeds size limit for versions 5 and up")
 
 
 class Loader:
