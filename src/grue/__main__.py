@@ -16,6 +16,7 @@ class Memory:
         self.high: int = self.read_word(0x04)
 
         self._version_check()
+        self._memory_checks()
 
     def details(self) -> None:
         print(f"zcode version: {self.version}")
@@ -35,6 +36,29 @@ class Memory:
     def _version_check(self) -> None:
         if self.version not in range(1, 9):
             raise RuntimeError(f"unsupported Z-Machine version of {self.version} found")
+
+    def _memory_checks(self) -> None:
+        header_size: int = 64
+
+        # There is a minimum size to a zcode program in that it must be able
+        # to accommodate a 64 byte header.
+
+        if len(self.data) < header_size:
+            raise RuntimeError("dynamic memory is below required 64 bytes")
+
+        # The specification indicates that dynamic memory must contain at
+        # least 64 bytes to accommodate the header.
+
+        if self.static < header_size:
+            raise RuntimeError("static memory begins before byte 64")
+
+        # The specification indicates that the total of dynamic plus static
+        # memory must not exceed 64K minus 2 bytes.
+
+        dynamic_size: int = self.static - 1 - self.dynamic + 1
+
+        if (dynamic_size + self.static) > 65534:
+            raise RuntimeError("memory exceeds addressable memory space")
 
 
 class Loader:
