@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "grue"
-version = "0.1.0"
+version = "0.2.0"
 description = "A Minimal Z-Machine Implementation"
 authors = ["Jeff Nyman <quendor.app@gmail.com>"]
 readme = "README.md"
