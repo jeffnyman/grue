@@ -37,6 +37,13 @@ class Memory:
         log(f"Static memory: {hex(self.static)}")
         log(f"High memory: {hex(self.high)}")
 
+    def read_instruction(self) -> None:
+        """Reads an instruction at the location of the program counter."""
+
+        log("\n----------------------------------------------")
+        log(f"Reading instruction at {hex(self.pc)}")
+        log("----------------------------------------------\n")
+
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
 
@@ -153,6 +160,8 @@ def main() -> int:
     data = Loader.load(sys.argv[1])
     memory = Memory(data)
     memory.details()
+
+    memory.read_instruction()
 
     return 0
 
