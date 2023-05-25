@@ -2,6 +2,8 @@
 
 import sys
 
+from grue.logging import log, setup_logging
+
 
 class Memory:
     """Handles the private interpreter memory implementation."""
@@ -29,11 +31,11 @@ class Memory:
     def details(self) -> None:
         """Display information of initial memory configuration."""
 
-        print(f"zcode version: {self.version}")
-        print(f"Release number: {self.release_number}")
-        print(f"Serial code: {self.serial_code.decode('utf-8')}")
-        print(f"Static memory: {hex(self.static)}")
-        print(f"High memory: {hex(self.high)}")
+        log(f"zcode version: {self.version}")
+        log(f"Release number: {self.release_number}")
+        log(f"Serial code: {self.serial_code.decode('utf-8')}")
+        log(f"Static memory: {hex(self.static)}")
+        log(f"High memory: {hex(self.high)}")
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
@@ -145,6 +147,8 @@ def main() -> int:
     """Entry point function for Grue."""
 
     print("GRUE Z-Machine Interpreter")
+
+    setup_logging("log.txt")
 
     data = Loader.load(sys.argv[1])
     memory = Memory(data)
