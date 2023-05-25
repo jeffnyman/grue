@@ -27,6 +27,7 @@ class Memory:
 
         self.pc: int = 0
 
+        self.opcode_byte: int
         self.format: FORMAT = FORMAT.UNKNOWN
 
         self._version_check()
@@ -59,29 +60,15 @@ class Memory:
         current_byte: int = self.pc
 
         # Grab the operation byte from the current byte.
-        opcode_byte: int = self.read_byte(self.pc)
-        log(f"Opcode byte: {opcode_byte} ({hex(opcode_byte)})")
+        self.opcode_byte: int = self.read_byte(self.pc)
+        log(f"Opcode byte: {self.opcode_byte} ({hex(self.opcode_byte)})")
 
         # Immediately move to the next byte. This will be necessary
         # to begin looking at operands.
 
         current_byte += 1
 
-        # Determine the instruction form.
-
-        if self.version >= 5 and opcode_byte == 0xBE:
-            raise RuntimeError("IMP: Handle EXTENDED Format")
-        elif opcode_byte & 0b11000000 == 0b11000000:
-            self.format = FORMAT.VARIABLE
-        elif opcode_byte & 0b10000000 == 0b10000000:
-            raise RuntimeError("IMP: Handle SHORT Format")
-        else:
-            raise RuntimeError("IMP: Handle LONG Format")
-
-        if self.format.name == "UNKNOWN":
-            raise RuntimeError("Instruction format is unknown.")
-        else:
-            print(f"Format: {self.format.name}")
+        self._determine_instruction_format()
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
@@ -114,6 +101,23 @@ class Memory:
             return 4 * address + (8 * self.strings_offset)
 
         return 8 * address
+
+    def _determine_instruction_format(self) -> None:
+        """Determine instruction format from opcode byte."""
+
+        if self.version >= 5 and self.opcode_byte == 0xBE:
+            raise RuntimeError("IMP: Handle EXTENDED Format")
+        elif self.opcode_byte & 0b11000000 == 0b11000000:
+            self.format = FORMAT.VARIABLE
+        elif self.opcode_byte & 0b10000000 == 0b10000000:
+            raise RuntimeError("IMP: Handle SHORT Format")
+        else:
+            raise RuntimeError("IMP: Handle LONG Format")
+
+        if self.format.name == "UNKNOWN":
+            raise RuntimeError("Instruction format is unknown.")
+        else:
+            print(f"Format: {self.format.name}")
 
     def _read_starting_address(self) -> None:
         """Read address where zcode execution begins."""

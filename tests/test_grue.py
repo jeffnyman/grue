@@ -129,6 +129,7 @@ def test_get_the_first_instruction_operation_byte(zork1_z3) -> None:
     memory.read_instruction()
 
     expect(hex(memory.read_byte(memory.pc))).to(equal(hex(0xE0)))
+    expect(hex(memory.opcode_byte)).to(equal(hex(0xE0)))
 
 
 def test_get_the_first_instruction_format(zork1_z3) -> None:
