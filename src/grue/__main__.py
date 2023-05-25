@@ -6,7 +6,7 @@ from enum import Enum
 from grue.logging import log, setup_logging
 
 
-FORMAT = Enum("Format", "UNKNOWN EXTENDED VARIABLE SHORT LONG")
+FORMAT = Enum("Format", "UNKNOWN VARIABLE")
 
 
 class Memory:
@@ -70,13 +70,13 @@ class Memory:
         # Determine the instruction form.
 
         if self.version >= 5 and opcode_byte == 0xBE:
-            self.format = FORMAT.EXTENDED
+            raise RuntimeError("IMP: Handle EXTENDED Format")
         elif opcode_byte & 0b11000000 == 0b11000000:
             self.format = FORMAT.VARIABLE
         elif opcode_byte & 0b10000000 == 0b10000000:
-            self.format = FORMAT.SHORT
+            raise RuntimeError("IMP: Handle SHORT Format")
         else:
-            self.format = FORMAT.LONG
+            raise RuntimeError("IMP: Handle LONG Format")
 
         print(f"Format: {self.format.name}")
 
