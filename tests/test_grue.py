@@ -144,23 +144,20 @@ def test_get_the_first_instruction_format(zork1_z3) -> None:
     expect(memory.format.name).to(equal("VARIABLE"))
 
 
-from grue.__main__ import FORMAT, Memory
-
-
-class FakeMemory(Memory):
-    def read_instruction(self):
-        self.format = FORMAT.UNKNOWN
-        raise RuntimeError("Instruction format is unknown.")
-
-
 def test_get_the_first_instruction_format_unknown_format(zork1_z3) -> None:
     """Grue raises an error when the instruction format is unknown."""
 
-    from grue.__main__ import Loader
+    from grue.__main__ import Loader, Memory, FORMAT
 
     data = Loader.load(str(zork1_z3))
 
-    memory = FakeMemory(data)
+    memory = Memory(data)
+
+    def fake_read_instruction(self) -> None:
+        self.format = FORMAT.UNKNOWN
+        raise RuntimeError("Instruction format is unknown.")
+
+    memory.read_instruction = fake_read_instruction.__get__(memory)
 
     with pytest.raises(RuntimeError, match="Instruction format is unknown."):
         memory.read_instruction()
