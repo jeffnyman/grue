@@ -78,7 +78,10 @@ class Memory:
         else:
             raise RuntimeError("IMP: Handle LONG Format")
 
-        print(f"Format: {self.format.name}")
+        if self.format.name == "UNKNOWN":
+            raise RuntimeError("Instruction format is unknown.")
+        else:
+            print(f"Format: {self.format.name}")
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
