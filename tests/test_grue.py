@@ -129,3 +129,16 @@ def test_get_the_first_instruction_operation_byte(zork1_z3) -> None:
     memory.read_instruction()
 
     expect(hex(memory.read_byte(memory.pc))).to(equal(hex(0xE0)))
+
+
+def test_get_the_first_instruction_format(zork1_z3) -> None:
+    """Grue reads the format of an instruction."""
+
+    from grue.__main__ import Loader, Memory
+
+    data = Loader.load(str(zork1_z3))
+
+    memory = Memory(data)
+    memory.read_instruction()
+
+    expect(memory.format.name).to(equal("VARIABLE"))

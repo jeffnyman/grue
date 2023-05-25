@@ -1,8 +1,12 @@
 """Package entry point for Grue."""
 
 import sys
+from enum import Enum
 
 from grue.logging import log, setup_logging
+
+
+FORMAT = Enum("Format", "UNKNOWN EXTENDED VARIABLE SHORT LONG")
 
 
 class Memory:
@@ -22,6 +26,8 @@ class Memory:
         self.strings_offset: int = self.read_word(0x2A)
 
         self.pc: int = 0
+
+        self.format: FORMAT = FORMAT.UNKNOWN
 
         self._version_check()
         self._memory_checks()
@@ -50,16 +56,29 @@ class Memory:
         # Reading a new instruction always takes place at the location
         # where the program counter is pointing.
 
-        current_byte = self.pc
+        current_byte: int = self.pc
 
         # Grab the operation byte from the current byte.
-        opcode_byte = self.read_byte(self.pc)
+        opcode_byte: int = self.read_byte(self.pc)
         log(f"Opcode byte: {opcode_byte} ({hex(opcode_byte)})")
 
         # Immediately move to the next byte. This will be necessary
         # to begin looking at operands.
 
         current_byte += 1
+
+        # Determine the instruction form.
+
+        if self.version >= 5 and opcode_byte == 0xBE:
+            self.format = FORMAT.EXTENDED
+        elif opcode_byte & 0b11000000 == 0b11000000:
+            self.format = FORMAT.VARIABLE
+        elif opcode_byte & 0b10000000 == 0b10000000:
+            self.format = FORMAT.SHORT
+        else:
+            self.format = FORMAT.LONG
+
+        print(f"Format: {self.format.name}")
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
