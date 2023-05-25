@@ -116,3 +116,16 @@ def test_determine_starting_main_routine(zork1_z6) -> None:
     memory = Memory(data)
 
     expect(hex(memory.pc)).to(equal(hex(0x7AA4)))
+
+
+def test_get_the_first_instruction_operation_byte(zork1_z3) -> None:
+    """Grue reads the operation byte from an instruction."""
+
+    from grue.__main__ import Loader, Memory
+
+    data = Loader.load(str(zork1_z3))
+
+    memory = Memory(data)
+    memory.read_instruction()
+
+    expect(hex(memory.read_byte(memory.pc))).to(equal(hex(0xE0)))

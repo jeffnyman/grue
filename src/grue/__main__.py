@@ -47,6 +47,20 @@ class Memory:
         log(f"Reading instruction at {hex(self.pc)}")
         log("----------------------------------------------\n")
 
+        # Reading a new instruction always takes place at the location
+        # where the program counter is pointing.
+
+        current_byte = self.pc
+
+        # Grab the operation byte from the current byte.
+        opcode_byte = self.read_byte(self.pc)
+        log(f"Opcode byte: {opcode_byte} ({hex(opcode_byte)})")
+
+        # Immediately move to the next byte. This will be necessary
+        # to begin looking at operands.
+
+        current_byte += 1
+
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
 
