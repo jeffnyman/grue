@@ -36,6 +36,9 @@ class Memory:
         log(f"Serial code: {self.serial_code.decode('utf-8')}")
         log(f"Static memory: {hex(self.static)}")
         log(f"High memory: {hex(self.high)}")
+        log(f"Routine offset: {self.routine_offset}")
+        log(f"Strings offset: {self.strings_offset}")
+        log(f"Starting address: {hex(self.pc)}")
 
     def read_instruction(self) -> None:
         """Reads an instruction at the location of the program counter."""
