@@ -73,12 +73,7 @@ class Memory:
 
         self._determine_instruction_format()
         self._determine_operand_count()
-
-        # Determine the opcode number.
-
-        if self.format == FORMAT.VARIABLE:
-            self.opcode_number = self.opcode_byte & 0b00011111
-            print(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")
+        self._determine_opcode_number()
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
@@ -111,6 +106,13 @@ class Memory:
             return 4 * address + (8 * self.strings_offset)
 
         return 8 * address
+
+    def _determine_opcode_number(self) -> None:
+        """Determine opcode number from format and operation byte."""
+
+        if self.format == FORMAT.VARIABLE:
+            self.opcode_number = self.opcode_byte & 0b00011111
+            print(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")
 
     def _determine_operand_count(self) -> None:
         """Determine operand count from the format and operation byte."""
