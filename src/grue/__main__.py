@@ -3,6 +3,7 @@
 import sys
 from enum import Enum
 
+from grue.loader import Loader
 from grue.logging import log, setup_logging
 
 
@@ -204,17 +205,6 @@ class Memory:
             raise RuntimeError(
                 f"program exceeds size limit of {size_limit}KB for version {self.version}"
             )
-
-
-class Loader:
-    """Handles loading a file from the command line and reading it as binary."""
-
-    @staticmethod
-    def load(program_file: str) -> bytes:
-        """Load the specified program file and return its content as bytes."""
-
-        zcode_file = open(program_file, "rb")
-        return zcode_file.read()
 
 
 def main() -> int:
