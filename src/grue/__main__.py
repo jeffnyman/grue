@@ -71,17 +71,7 @@ class Memory:
         current_byte += 1
 
         self._determine_instruction_format()
-
-        # Get the operand count.
-
-        if self.format == FORMAT.VARIABLE:
-            if self.opcode_byte & 0b00100000 == 0b00100000:
-                self.operand_count = OP_COUNT.VAR
-                print(f"Operand Count: {self.operand_count.name}")
-            else:
-                raise RuntimeError("IMP: Handle non-VAR operand count for VARIABLE.")
-        else:
-            raise RuntimeError("Operand Count is unknown.")
+        self._determine_operand_count()
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
@@ -114,6 +104,18 @@ class Memory:
             return 4 * address + (8 * self.strings_offset)
 
         return 8 * address
+
+    def _determine_operand_count(self) -> None:
+        """Determine operand count from the format and operation byte."""
+
+        if self.format == FORMAT.VARIABLE:
+            if self.opcode_byte & 0b00100000 == 0b00100000:
+                self.operand_count = OP_COUNT.VAR
+                print(f"Operand Count: {self.operand_count.name}")
+            else:
+                raise RuntimeError("IMP: Handle non-VAR operand count for VARIABLE.")
+        else:
+            raise RuntimeError("Operand Count is unknown.")
 
     def _determine_instruction_format(self) -> None:
         """Determine instruction format from opcode byte."""
