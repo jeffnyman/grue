@@ -145,7 +145,7 @@ def test_get_the_first_instruction_format(zork1_z3) -> None:
     expect(memory.format.name).to(equal("VARIABLE"))
 
 
-def test_get_the_first_instruction_format_unknown_format(zork1_z3) -> None:
+def test_report_unknown_instruction_format(zork1_z3) -> None:
     """Grue raises an error when the instruction format is unknown."""
 
     from grue.__main__ import Loader, Memory, FORMAT
@@ -160,5 +160,42 @@ def test_get_the_first_instruction_format_unknown_format(zork1_z3) -> None:
 
     memory.read_instruction = fake_read_instruction.__get__(memory)
 
-    with pytest.raises(RuntimeError, match="Instruction format is unknown."):
+    with pytest.raises(RuntimeError) as exc_info:
         memory.read_instruction()
+
+    expect(str(exc_info.value)).to(equal("Instruction format is unknown."))
+
+
+def test_get_the_first_instruction_operand_count(zork1_z3) -> None:
+    """Grue reads the operand count of an instruction."""
+
+    from grue.__main__ import Loader, Memory
+
+    data = Loader.load(str(zork1_z3))
+
+    memory = Memory(data)
+    memory.read_instruction()
+
+    expect(memory.operand_count.name).to(equal("VAR"))
+
+
+def test_report_unknown_operand_count(zork1_z3) -> None:
+    """Grue raises an error when the operand count is unknown."""
+
+    from grue.__main__ import Loader, Memory, FORMAT, OP_COUNT
+
+    data = Loader.load(str(zork1_z3))
+
+    memory = Memory(data)
+
+    def fake_read_instruction(self) -> None:
+        self.format = FORMAT.VARIABLE
+        self.operand_count = OP_COUNT.UNKNOWN
+        raise RuntimeError("Operand Count is unknown.")
+
+    memory.read_instruction = fake_read_instruction.__get__(memory)
+
+    with pytest.raises(RuntimeError) as exc_info:
+        memory.read_instruction()
+
+    expect(str(exc_info.value)).to(equal("Operand Count is unknown."))

@@ -7,6 +7,7 @@ from grue.logging import log, setup_logging
 
 
 FORMAT = Enum("Format", "UNKNOWN VARIABLE")
+OP_COUNT = Enum("OpCount", "UNKNOWN VAR")
 
 
 class Memory:
@@ -29,6 +30,7 @@ class Memory:
 
         self.opcode_byte: int
         self.format: FORMAT = FORMAT.UNKNOWN
+        self.operand_count: OP_COUNT = OP_COUNT.UNKNOWN
 
         self._version_check()
         self._memory_checks()
@@ -69,6 +71,17 @@ class Memory:
         current_byte += 1
 
         self._determine_instruction_format()
+
+        # Get the operand count.
+
+        if self.format == FORMAT.VARIABLE:
+            if self.opcode_byte & 0b00100000 == 0b00100000:
+                self.operand_count = OP_COUNT.VAR
+                print(f"Operand Count: {self.operand_count.name}")
+            else:
+                raise RuntimeError("IMP: Handle non-VAR operand count for VARIABLE.")
+        else:
+            raise RuntimeError("Operand Count is unknown.")
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
