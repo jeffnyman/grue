@@ -30,6 +30,7 @@ class Memory:
         self.opcode_number: int
         self.format: FORMAT = FORMAT.UNKNOWN
         self.operand_count: OP_COUNT = OP_COUNT.UNKNOWN
+        self.operand_types: list = []
 
         self._version_check()
         self._memory_checks()
@@ -167,6 +168,16 @@ class Memory:
             raise RuntimeError("Instruction format is unknown.")
         else:
             log(f"Format: {self.format.name}")
+
+    def _type_from_bits(self, value: int) -> None:
+        """Determine operand type by binary digits."""
+
+        if value == 0:
+            raise RuntimeError("IMP: Large Operand Type")
+        elif value == 1:
+            raise RuntimeError("IMP: Small Operand Type")
+        else:
+            raise RuntimeError("IMP: Variable Operand Type")
 
     def _read_starting_address(self) -> None:
         """Read address where zcode execution begins."""
