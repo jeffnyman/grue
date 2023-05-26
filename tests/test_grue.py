@@ -20,67 +20,43 @@ def test_load_zcode_program(zork1_z3, monkeypatch, capsys) -> None:
     expect(Loader.load(zork1_z3)).to(be_a(bytes))
 
 
-def test_read_byte(zork1_z3) -> None:
+def test_read_byte(zork1_z3_program) -> None:
     """Grue reads byte addresses from memory."""
 
-    from grue.loader import Loader
-    from grue.memory import Memory
-
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
 
     expect(memory.read_byte(0)).to(equal(3))
 
 
-def test_read_word(zork1_z3) -> None:
+def test_read_word(zork1_z3_program) -> None:
     """Grue reads word addresses from memory."""
 
-    from grue.loader import Loader
-    from grue.memory import Memory
-
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
 
     expect(memory.read_word(0x0E)).to(equal(memory.static))
     expect(memory.read_word(0x04)).to(equal(memory.high))
 
 
-def test_determine_zcode_version(zork1_z3) -> None:
+def test_determine_zcode_version(zork1_z3_program) -> None:
     """Grue reads the zcode version from memory."""
 
-    from grue.loader import Loader
-    from grue.memory import Memory
-
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
 
     expect(memory.version).to(equal(3))
 
 
-def test_determine_zcode_release_number(zork1_z3) -> None:
+def test_determine_zcode_release_number(zork1_z3_program) -> None:
     """Grue reads the zcode release number from memory."""
 
-    from grue.loader import Loader
-    from grue.memory import Memory
-
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
 
     expect(memory.release_number).to(equal(88))
 
 
-def test_determine_zcode_serial_code(zork1_z3) -> None:
+def test_determine_zcode_serial_code(zork1_z3_program) -> None:
     """Grue reads the zcode serial code from memory."""
 
-    from grue.__main__ import Loader, Memory
-
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
 
     expect(int(memory.serial_code.decode("utf-8"))).to(equal(840726))
 
@@ -99,15 +75,10 @@ def test_invalid_version_not_allowed(invalid_version_zcode_file) -> None:
     expect(str(exc_info.value)).to(contain("unsupported Z-Machine version of 9 found"))
 
 
-def test_determine_starting_address(zork1_z3) -> None:
+def test_determine_starting_address(zork1_z3_program) -> None:
     """Grue reads starting address for zcode execution (versions 1 to 5)."""
 
-    from grue.loader import Loader
-    from grue.memory import Memory
-
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
 
     expect(hex(memory.pc)).to(equal(hex(0x4F05)))
 
@@ -125,43 +96,31 @@ def test_determine_starting_main_routine(zork1_z6) -> None:
     expect(hex(memory.pc)).to(equal(hex(0x7AA4)))
 
 
-def test_get_the_first_instruction_operation_byte(zork1_z3) -> None:
+def test_get_the_first_instruction_operation_byte(zork1_z3_program) -> None:
     """Grue reads the operation byte from an instruction."""
 
-    from grue.__main__ import Loader, Memory
-
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
     memory.read_instruction()
 
     expect(hex(memory.read_byte(memory.pc))).to(equal(hex(0xE0)))
     expect(hex(memory.opcode_byte)).to(equal(hex(0xE0)))
 
 
-def test_get_the_first_instruction_format(zork1_z3) -> None:
+def test_get_the_first_instruction_format(zork1_z3_program) -> None:
     """Grue reads the format of an instruction."""
 
-    from grue.loader import Loader
-    from grue.memory import Memory
-
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
     memory.read_instruction()
 
     expect(memory.format.name).to(equal("VARIABLE"))
 
 
-def test_report_unknown_instruction_format(zork1_z3) -> None:
+def test_report_unknown_instruction_format(zork1_z3_program) -> None:
     """Grue raises an error when the instruction format is unknown."""
 
-    from grue.loader import Loader
-    from grue.memory import Memory, FORMAT
+    from grue.memory import FORMAT
 
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
 
     def fake_read_instruction(self) -> None:
         self.format = FORMAT.UNKNOWN
@@ -175,29 +134,21 @@ def test_report_unknown_instruction_format(zork1_z3) -> None:
     expect(str(exc_info.value)).to(equal("Instruction format is unknown."))
 
 
-def test_get_the_first_instruction_operand_count(zork1_z3) -> None:
+def test_get_the_first_instruction_operand_count(zork1_z3_program) -> None:
     """Grue reads the operand count of an instruction."""
 
-    from grue.loader import Loader
-    from grue.memory import Memory
-
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
     memory.read_instruction()
 
     expect(memory.operand_count.name).to(equal("VAR"))
 
 
-def test_report_unknown_operand_count(zork1_z3) -> None:
+def test_report_unknown_operand_count(zork1_z3_program) -> None:
     """Grue raises an error when the operand count is unknown."""
 
-    from grue.loader import Loader
-    from grue.memory import Memory, FORMAT, OP_COUNT
+    from grue.memory import FORMAT, OP_COUNT
 
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
 
     def fake_read_instruction(self) -> None:
         self.format = FORMAT.VARIABLE
@@ -212,15 +163,10 @@ def test_report_unknown_operand_count(zork1_z3) -> None:
     expect(str(exc_info.value)).to(equal("Operand Count is unknown."))
 
 
-def test_get_the_first_instruction_opcode_number(zork1_z3) -> None:
+def test_get_the_first_instruction_opcode_number(zork1_z3_program) -> None:
     """Grue determines the opcode number of an instruction."""
 
-    from grue.loader import Loader
-    from grue.memory import Memory
-
-    data = Loader.load(str(zork1_z3))
-
-    memory = Memory(data)
+    memory = zork1_z3_program
     memory.read_instruction()
 
     expect(memory.opcode_number).to(equal(0))

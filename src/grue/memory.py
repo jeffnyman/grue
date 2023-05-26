@@ -1,3 +1,5 @@
+"""Module for the interpreter memory."""
+
 from enum import Enum
 
 from grue.logging import log

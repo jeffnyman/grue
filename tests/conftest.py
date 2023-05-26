@@ -7,6 +7,17 @@ from typing import Generator
 
 import pytest
 
+from grue.loader import Loader
+from grue.memory import Memory
+
+
+@pytest.fixture()
+def zork1_z3_program(zork1_z3) -> Memory:
+    """Provides a Zork zcode memory map."""
+
+    data = Loader.load(str(zork1_z3))
+    return Memory(data)
+
 
 @pytest.fixture()
 def zork1_z3(pytestconfig) -> Path:
