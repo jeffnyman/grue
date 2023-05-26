@@ -73,6 +73,33 @@ class Memory:
         self._determine_operand_count()
         self._determine_opcode_number()
 
+        # Need to determine the operand types.
+
+        if self.format.VARIABLE:
+            # First field
+            if current_byte & 0b11000000 == 0b11000000:
+                print("First Field: Omitted")
+            else:
+                raise RuntimeError("IMP: First field operand")
+
+            # Second field
+            if current_byte & 0b00110000 == 0b00110000:
+                print("Second Field: Omitted")
+            else:
+                raise RuntimeError("IMP: Second field operand")
+
+            # Third field
+            if current_byte & 0b00001100 == 0b00001100:
+                print("Third Field: Omitted")
+            else:
+                raise RuntimeError("IMP: Third field operand")
+
+            # Fourth field
+            if current_byte & 0b00000011 == 0b00000011:
+                print("Fourth Field: Omitted")
+            else:
+                raise RuntimeError("IMP: Fourth field operand")
+
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
 
