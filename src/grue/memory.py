@@ -110,7 +110,7 @@ class Memory:
 
         if self.format == FORMAT.VARIABLE:
             self.opcode_number = self.opcode_byte & 0b00011111
-            print(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")
+            log(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")
 
     def _determine_operand_count(self) -> None:
         """Determine operand count from the format and operation byte."""
@@ -118,7 +118,7 @@ class Memory:
         if self.format == FORMAT.VARIABLE:
             if self.opcode_byte & 0b00100000 == 0b00100000:
                 self.operand_count = OP_COUNT.VAR
-                print(f"Operand Count: {self.operand_count.name}")
+                log(f"Operand Count: {self.operand_count.name}")
             else:
                 raise RuntimeError("IMP: Handle non-VAR operand count for VARIABLE.")
         else:
@@ -139,7 +139,7 @@ class Memory:
         if self.format.name == "UNKNOWN":
             raise RuntimeError("Instruction format is unknown.")
         else:
-            print(f"Format: {self.format.name}")
+            log(f"Format: {self.format.name}")
 
     def _read_starting_address(self) -> None:
         """Read address where zcode execution begins."""
