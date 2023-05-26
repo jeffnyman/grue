@@ -7,7 +7,8 @@ import pytest
 def test_load_zcode_program(zork1_z3, monkeypatch, capsys) -> None:
     """Grue loads a zcode program as a sequence of bytes."""
 
-    from grue.__main__ import Loader, main
+    from grue.__main__ import main
+    from grue.loader import Loader
 
     monkeypatch.setattr("sys.argv", ["grue", str(zork1_z3)])
 
@@ -22,7 +23,8 @@ def test_load_zcode_program(zork1_z3, monkeypatch, capsys) -> None:
 def test_read_byte(zork1_z3) -> None:
     """Grue reads byte addresses from memory."""
 
-    from grue.__main__ import Loader, Memory
+    from grue.loader import Loader
+    from grue.memory import Memory
 
     data = Loader.load(str(zork1_z3))
 
@@ -34,7 +36,8 @@ def test_read_byte(zork1_z3) -> None:
 def test_read_word(zork1_z3) -> None:
     """Grue reads word addresses from memory."""
 
-    from grue.__main__ import Loader, Memory
+    from grue.loader import Loader
+    from grue.memory import Memory
 
     data = Loader.load(str(zork1_z3))
 
@@ -47,7 +50,8 @@ def test_read_word(zork1_z3) -> None:
 def test_determine_zcode_version(zork1_z3) -> None:
     """Grue reads the zcode version from memory."""
 
-    from grue.__main__ import Loader, Memory
+    from grue.loader import Loader
+    from grue.memory import Memory
 
     data = Loader.load(str(zork1_z3))
 
@@ -59,7 +63,8 @@ def test_determine_zcode_version(zork1_z3) -> None:
 def test_determine_zcode_release_number(zork1_z3) -> None:
     """Grue reads the zcode release number from memory."""
 
-    from grue.__main__ import Loader, Memory
+    from grue.loader import Loader
+    from grue.memory import Memory
 
     data = Loader.load(str(zork1_z3))
 
@@ -83,7 +88,7 @@ def test_determine_zcode_serial_code(zork1_z3) -> None:
 def test_invalid_version_not_allowed(invalid_version_zcode_file) -> None:
     """Grue raises an an error for unsupported versions."""
 
-    from grue.__main__ import Memory
+    from grue.memory import Memory
 
     with open(invalid_version_zcode_file, "rb") as file:
         zcode_data = file.read()
@@ -97,7 +102,8 @@ def test_invalid_version_not_allowed(invalid_version_zcode_file) -> None:
 def test_determine_starting_address(zork1_z3) -> None:
     """Grue reads starting address for zcode execution (versions 1 to 5)."""
 
-    from grue.__main__ import Loader, Memory
+    from grue.loader import Loader
+    from grue.memory import Memory
 
     data = Loader.load(str(zork1_z3))
 
@@ -109,7 +115,8 @@ def test_determine_starting_address(zork1_z3) -> None:
 def test_determine_starting_main_routine(zork1_z6) -> None:
     """Grue reads starting main routine for zcode execution (version 6)."""
 
-    from grue.__main__ import Loader, Memory
+    from grue.loader import Loader
+    from grue.memory import Memory
 
     data = Loader.load(str(zork1_z6))
 
@@ -135,7 +142,8 @@ def test_get_the_first_instruction_operation_byte(zork1_z3) -> None:
 def test_get_the_first_instruction_format(zork1_z3) -> None:
     """Grue reads the format of an instruction."""
 
-    from grue.__main__ import Loader, Memory
+    from grue.loader import Loader
+    from grue.memory import Memory
 
     data = Loader.load(str(zork1_z3))
 
@@ -148,7 +156,8 @@ def test_get_the_first_instruction_format(zork1_z3) -> None:
 def test_report_unknown_instruction_format(zork1_z3) -> None:
     """Grue raises an error when the instruction format is unknown."""
 
-    from grue.__main__ import Loader, Memory, FORMAT
+    from grue.loader import Loader
+    from grue.memory import Memory, FORMAT
 
     data = Loader.load(str(zork1_z3))
 
@@ -169,7 +178,8 @@ def test_report_unknown_instruction_format(zork1_z3) -> None:
 def test_get_the_first_instruction_operand_count(zork1_z3) -> None:
     """Grue reads the operand count of an instruction."""
 
-    from grue.__main__ import Loader, Memory
+    from grue.loader import Loader
+    from grue.memory import Memory
 
     data = Loader.load(str(zork1_z3))
 
@@ -182,7 +192,8 @@ def test_get_the_first_instruction_operand_count(zork1_z3) -> None:
 def test_report_unknown_operand_count(zork1_z3) -> None:
     """Grue raises an error when the operand count is unknown."""
 
-    from grue.__main__ import Loader, Memory, FORMAT, OP_COUNT
+    from grue.loader import Loader
+    from grue.memory import Memory, FORMAT, OP_COUNT
 
     data = Loader.load(str(zork1_z3))
 
@@ -204,7 +215,8 @@ def test_report_unknown_operand_count(zork1_z3) -> None:
 def test_get_the_first_instruction_opcode_number(zork1_z3) -> None:
     """Grue determines the opcode number of an instruction."""
 
-    from grue.__main__ import Loader, Memory
+    from grue.loader import Loader
+    from grue.memory import Memory
 
     data = Loader.load(str(zork1_z3))
 
