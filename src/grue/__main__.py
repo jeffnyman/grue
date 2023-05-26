@@ -29,6 +29,7 @@ class Memory:
         self.pc: int = 0
 
         self.opcode_byte: int
+        self.opcode_number: int
         self.format: FORMAT = FORMAT.UNKNOWN
         self.operand_count: OP_COUNT = OP_COUNT.UNKNOWN
 
@@ -73,13 +74,19 @@ class Memory:
         self._determine_instruction_format()
         self._determine_operand_count()
 
+        # Determine the opcode number.
+
+        if self.format == FORMAT.VARIABLE:
+            self.opcode_number = self.opcode_byte & 0b00011111
+            print(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")
+
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
 
         return self.data[address]
 
     def read_bytes(self, address: int, length: int) -> bytes:
-        """Reeads a series of bytes starting at a memory address."""
+        """Reads a series of bytes starting at a memory address."""
 
         return self.data[address : address + length]
 

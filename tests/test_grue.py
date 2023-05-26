@@ -199,3 +199,16 @@ def test_report_unknown_operand_count(zork1_z3) -> None:
         memory.read_instruction()
 
     expect(str(exc_info.value)).to(equal("Operand Count is unknown."))
+
+
+def test_get_the_first_instruction_opcode_number(zork1_z3) -> None:
+    """Grue determines the opcode number of an instruction."""
+
+    from grue.__main__ import Loader, Memory
+
+    data = Loader.load(str(zork1_z3))
+
+    memory = Memory(data)
+    memory.read_instruction()
+
+    expect(memory.opcode_number).to(equal(0))
