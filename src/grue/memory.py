@@ -117,6 +117,8 @@ class Memory:
         return 8 * address
 
     def _determine_operand_values(self, current_byte: int) -> None:
+        """Read operand value based on operand type."""
+
         for operand_type in self.operand_types:
             if operand_type == OP_TYPE.Large:
                 self.operand_values.append(self.read_word(current_byte))
@@ -130,6 +132,8 @@ class Memory:
         log(f"Operand Values: {values}")
 
     def _determine_operand_types(self, current_byte: int) -> None:
+        """Determine operand type from the byte being read."""
+
         value = self.read_byte(current_byte)
 
         if self.format == FORMAT.VARIABLE:
