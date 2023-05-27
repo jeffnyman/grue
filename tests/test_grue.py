@@ -170,3 +170,15 @@ def test_get_the_first_instruction_opcode_number(zork1_z3_program) -> None:
     memory.read_instruction()
 
     expect(memory.opcode_number).to(equal(0))
+
+
+def test_get_the_first_instruction_operand_types(zork1_z3_program) -> None:
+    """Grue determines the operand types of an instruction."""
+
+    memory = zork1_z3_program
+    memory.read_instruction()
+
+    expect(len(memory.operand_types)).to(equal(3))
+    expect(memory.operand_types[0].name).to(equal("Large"))
+    expect(memory.operand_types[1].name).to(equal("Large"))
+    expect(memory.operand_types[2].name).to(equal("Large"))
