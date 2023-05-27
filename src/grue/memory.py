@@ -76,6 +76,21 @@ class Memory:
         self._determine_opcode_number()
         self._determine_operand_types(current_byte)
 
+        # Have to move to the next byte after getting operand types.
+        # This may differ for non-variable formats.
+
+        current_byte += 1
+
+        # Determine the operand valeus.
+
+        for operand_type in self.operand_types:
+            if operand_type == OP_TYPE.Large:
+                raise RuntimeError("IMP: Type large operand value.")
+            if operand_type == OP_TYPE.Small:
+                raise RuntimeError("IMP: Type amall operand value.")
+            if operand_type == OP_TYPE.Variable:
+                raise RuntimeError("IMP: Type variable operand value.")
+
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
 
