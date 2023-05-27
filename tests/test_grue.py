@@ -182,3 +182,15 @@ def test_get_the_first_instruction_operand_types(zork1_z3_program) -> None:
     expect(memory.operand_types[0].name).to(equal("Large"))
     expect(memory.operand_types[1].name).to(equal("Large"))
     expect(memory.operand_types[2].name).to(equal("Large"))
+
+
+def test_get_the_first_instruction_operand_values(zork1_z3_program) -> None:
+    """Grue determines the operand values of an instruction."""
+
+    memory = zork1_z3_program
+    memory.read_instruction()
+
+    expect(len(memory.operand_values)).to(equal(3))
+    expect(hex(memory.operand_values[0])).to(equal(hex(0x2A39)))
+    expect(hex(memory.operand_values[1])).to(equal(hex(0x8010)))
+    expect(hex(memory.operand_values[2])).to(equal(hex(0xFFFF)))

@@ -32,6 +32,7 @@ class Memory:
         self.format: FORMAT = FORMAT.UNKNOWN
         self.operand_count: OP_COUNT = OP_COUNT.UNKNOWN
         self.operand_types: list = []
+        self.operand_values: list = []
 
         self._version_check()
         self._memory_checks()
@@ -85,11 +86,15 @@ class Memory:
 
         for operand_type in self.operand_types:
             if operand_type == OP_TYPE.Large:
-                raise RuntimeError("IMP: Type large operand value.")
+                self.operand_values.append(self.read_word(current_byte))
+                current_byte += 2
             if operand_type == OP_TYPE.Small:
                 raise RuntimeError("IMP: Type amall operand value.")
             if operand_type == OP_TYPE.Variable:
                 raise RuntimeError("IMP: Type variable operand value.")
+
+        values = [hex(num)[2:].rjust(4, "0") for num in self.operand_values]
+        log(f"Operand Values: {values}")
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
