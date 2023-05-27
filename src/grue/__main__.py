@@ -25,6 +25,7 @@ def main() -> int:
     memory.details()
 
     instruction: "Instruction" = memory.read_instruction()
+    instruction.details()
 
     return 0
 

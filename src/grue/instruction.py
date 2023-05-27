@@ -29,6 +29,18 @@ class Instruction:
         self.operand_types: list = []
         self.operand_values: list = []
 
+    def details(self) -> None:
+        """Display information of instruction parts."""
+
+        log(f"Opcode byte: {self.opcode_byte} ({hex(self.opcode_byte)})")
+        log(f"Format: {self.format.name}")
+        log(f"Operand Count: {self.operand_count.name}")
+        log(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")
+        log(f"Operand Types: {self.operand_types}")
+
+        values = [hex(num)[2:].rjust(4, "0") for num in self.operand_values]
+        log(f"Operand Values: {values}")
+
     def decode(self) -> None:
         """Determine all details of an instruction."""
 
@@ -43,7 +55,6 @@ class Instruction:
 
         # Grab the operation byte from the current byte.
         self.opcode_byte: int = self.memory.read_byte(self.memory.pc)
-        log(f"Opcode byte: {self.opcode_byte} ({hex(self.opcode_byte)})")
 
         # Immediately move to the next byte. This will be necessary
         # to begin looking at operands.
@@ -73,9 +84,6 @@ class Instruction:
                 raise RuntimeError("IMP: Type amall operand value.")
             if operand_type == OP_TYPE.Variable:
                 raise RuntimeError("IMP: Type variable operand value.")
-
-        values = [hex(num)[2:].rjust(4, "0") for num in self.operand_values]
-        log(f"Operand Values: {values}")
 
     def _determine_operand_types(self) -> None:
         """Determine operand type from the byte being read."""
@@ -107,14 +115,11 @@ class Instruction:
             else:
                 self.operand_types.append(self._type_from_bits(value & 0b00000011))
 
-        log(f"Operand Types: {self.operand_types}")
-
     def _determine_opcode_number(self) -> None:
         """Determine opcode number from format and operation byte."""
 
         if self.format == FORMAT.VARIABLE:
             self.opcode_number = self.opcode_byte & 0b00011111
-            log(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")
 
     def _determine_operand_count(self) -> None:
         """Determine operand count from the format and operation byte."""
@@ -122,7 +127,6 @@ class Instruction:
         if self.format == FORMAT.VARIABLE:
             if self.opcode_byte & 0b00100000 == 0b00100000:
                 self.operand_count = OP_COUNT.VAR
-                log(f"Operand Count: {self.operand_count.name}")
             else:
                 raise RuntimeError("IMP: Handle non-VAR operand count for VARIABLE.")
         else:
@@ -142,8 +146,6 @@ class Instruction:
 
         if self.format.name == "UNKNOWN":
             raise RuntimeError("Instruction format is unknown.")
-        else:
-            log(f"Format: {self.format.name}")
 
     def _type_from_bits(self, value: int) -> OP_TYPE:
         """Determine operand type by binary digits."""
