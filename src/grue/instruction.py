@@ -1,9 +1,17 @@
 """Module to represent a zcode instruction."""
 
+from enum import Enum
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from grue.memory import Memory
+
+from grue.logging import log
+
+
+FORMAT = Enum("Format", "UNKNOWN VARIABLE")
+OP_COUNT = Enum("OpCount", "UNKNOWN VAR")
+OP_TYPE = Enum("OpType", "UNKNOWN Variable Large Small")
 
 
 class Instruction:
@@ -12,5 +20,137 @@ class Instruction:
     def __init__(self, memory: "Memory") -> None:
         self.memory: "Memory" = memory
 
+        self.current_byte: int
+
+        self.opcode_byte: int
+        self.opcode_number: int
+        self.format: FORMAT = FORMAT.UNKNOWN
+        self.operand_count: OP_COUNT = OP_COUNT.UNKNOWN
+        self.operand_types: list = []
+        self.operand_values: list = []
+
     def decode(self) -> None:
         """Determine all details of an instruction."""
+
+        log("\n----------------------------------------------")
+        log(f"Reading instruction at {hex(self.memory.pc)}")
+        log("----------------------------------------------\n")
+
+        # Reading a new instruction always takes place at the location
+        # where the program counter is pointing.
+
+        self.current_byte: int = self.memory.pc
+
+        # Grab the operation byte from the current byte.
+        self.opcode_byte: int = self.memory.read_byte(self.memory.pc)
+        log(f"Opcode byte: {self.opcode_byte} ({hex(self.opcode_byte)})")
+
+        # Immediately move to the next byte. This will be necessary
+        # to begin looking at operands.
+
+        self.current_byte += 1
+
+        self._determine_instruction_format()
+        self._determine_operand_count()
+        self._determine_opcode_number()
+        self._determine_operand_types()
+
+        # Have to move to the next byte after getting operand types.
+        # This may differ for non-variable formats.
+
+        self.current_byte += 1
+
+        self._determine_operand_values()
+
+    def _determine_operand_values(self) -> None:
+        """Read operand value based on operand type."""
+
+        for operand_type in self.operand_types:
+            if operand_type == OP_TYPE.Large:
+                self.operand_values.append(self.memory.read_word(self.current_byte))
+                self.current_byte += 2
+            if operand_type == OP_TYPE.Small:
+                raise RuntimeError("IMP: Type amall operand value.")
+            if operand_type == OP_TYPE.Variable:
+                raise RuntimeError("IMP: Type variable operand value.")
+
+        values = [hex(num)[2:].rjust(4, "0") for num in self.operand_values]
+        log(f"Operand Values: {values}")
+
+    def _determine_operand_types(self) -> None:
+        """Determine operand type from the byte being read."""
+
+        value = self.memory.read_byte(self.current_byte)
+
+        if self.format == FORMAT.VARIABLE:
+            # First field
+            if value & 0b11000000 == 0b11000000:
+                print("First Field: Omitted")
+            else:
+                self.operand_types.append(self._type_from_bits(value >> 6))
+
+            # Second field
+            if value & 0b00110000 == 0b00110000:
+                print("Second Field: Omitted")
+            else:
+                self.operand_types.append(self._type_from_bits((value & 0b00110000) >> 4))
+
+            # Third field
+            if value & 0b00001100 == 0b00001100:
+                print("Third Field: Omitted")
+            else:
+                self.operand_types.append(self._type_from_bits((value & 0b00001100) >> 2))
+
+            # Fourth field
+            if value & 0b00000011 == 0b00000011:
+                return
+            else:
+                self.operand_types.append(self._type_from_bits(value & 0b00000011))
+
+        log(f"Operand Types: {self.operand_types}")
+
+    def _determine_opcode_number(self) -> None:
+        """Determine opcode number from format and operation byte."""
+
+        if self.format == FORMAT.VARIABLE:
+            self.opcode_number = self.opcode_byte & 0b00011111
+            log(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")
+
+    def _determine_operand_count(self) -> None:
+        """Determine operand count from the format and operation byte."""
+
+        if self.format == FORMAT.VARIABLE:
+            if self.opcode_byte & 0b00100000 == 0b00100000:
+                self.operand_count = OP_COUNT.VAR
+                log(f"Operand Count: {self.operand_count.name}")
+            else:
+                raise RuntimeError("IMP: Handle non-VAR operand count for VARIABLE.")
+        else:
+            raise RuntimeError("Operand Count is unknown.")
+
+    def _determine_instruction_format(self) -> None:
+        """Determine instruction format from opcode byte."""
+
+        if self.memory.version >= 5 and self.opcode_byte == 0xBE:
+            raise RuntimeError("IMP: Handle EXTENDED Format")
+        elif self.opcode_byte & 0b11000000 == 0b11000000:
+            self.format = FORMAT.VARIABLE
+        elif self.opcode_byte & 0b10000000 == 0b10000000:
+            raise RuntimeError("IMP: Handle SHORT Format")
+        else:
+            raise RuntimeError("IMP: Handle LONG Format")
+
+        if self.format.name == "UNKNOWN":
+            raise RuntimeError("Instruction format is unknown.")
+        else:
+            log(f"Format: {self.format.name}")
+
+    def _type_from_bits(self, value: int) -> OP_TYPE:
+        """Determine operand type by binary digits."""
+
+        if value == 0:
+            return OP_TYPE.Large
+        elif value == 1:
+            return OP_TYPE.Small
+        else:
+            return OP_TYPE.Variable

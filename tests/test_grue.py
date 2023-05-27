@@ -100,25 +100,25 @@ def test_get_the_first_instruction_operation_byte(zork1_z3_program) -> None:
     """Grue reads the operation byte from an instruction."""
 
     memory = zork1_z3_program
-    memory.read_instruction()
+    instruction = memory.read_instruction()
 
     expect(hex(memory.read_byte(memory.pc))).to(equal(hex(0xE0)))
-    expect(hex(memory.opcode_byte)).to(equal(hex(0xE0)))
+    expect(hex(instruction.opcode_byte)).to(equal(hex(0xE0)))
 
 
 def test_get_the_first_instruction_format(zork1_z3_program) -> None:
     """Grue reads the format of an instruction."""
 
     memory = zork1_z3_program
-    memory.read_instruction()
+    instruction = memory.read_instruction()
 
-    expect(memory.format.name).to(equal("VARIABLE"))
+    expect(instruction.format.name).to(equal("VARIABLE"))
 
 
 def test_report_unknown_instruction_format(zork1_z3_program) -> None:
     """Grue raises an error when the instruction format is unknown."""
 
-    from grue.memory import FORMAT
+    from grue.instruction import FORMAT
 
     memory = zork1_z3_program
 
@@ -138,15 +138,15 @@ def test_get_the_first_instruction_operand_count(zork1_z3_program) -> None:
     """Grue reads the operand count of an instruction."""
 
     memory = zork1_z3_program
-    memory.read_instruction()
+    instruction = memory.read_instruction()
 
-    expect(memory.operand_count.name).to(equal("VAR"))
+    expect(instruction.operand_count.name).to(equal("VAR"))
 
 
 def test_report_unknown_operand_count(zork1_z3_program) -> None:
     """Grue raises an error when the operand count is unknown."""
 
-    from grue.memory import FORMAT, OP_COUNT
+    from grue.instruction import FORMAT, OP_COUNT
 
     memory = zork1_z3_program
 
@@ -167,30 +167,30 @@ def test_get_the_first_instruction_opcode_number(zork1_z3_program) -> None:
     """Grue determines the opcode number of an instruction."""
 
     memory = zork1_z3_program
-    memory.read_instruction()
+    instruction = memory.read_instruction()
 
-    expect(memory.opcode_number).to(equal(0))
+    expect(instruction.opcode_number).to(equal(0))
 
 
 def test_get_the_first_instruction_operand_types(zork1_z3_program) -> None:
     """Grue determines the operand types of an instruction."""
 
     memory = zork1_z3_program
-    memory.read_instruction()
+    instruction = memory.read_instruction()
 
-    expect(len(memory.operand_types)).to(equal(3))
-    expect(memory.operand_types[0].name).to(equal("Large"))
-    expect(memory.operand_types[1].name).to(equal("Large"))
-    expect(memory.operand_types[2].name).to(equal("Large"))
+    expect(len(instruction.operand_types)).to(equal(3))
+    expect(instruction.operand_types[0].name).to(equal("Large"))
+    expect(instruction.operand_types[1].name).to(equal("Large"))
+    expect(instruction.operand_types[2].name).to(equal("Large"))
 
 
 def test_get_the_first_instruction_operand_values(zork1_z3_program) -> None:
     """Grue determines the operand values of an instruction."""
 
     memory = zork1_z3_program
-    memory.read_instruction()
+    instruction = memory.read_instruction()
 
-    expect(len(memory.operand_values)).to(equal(3))
-    expect(hex(memory.operand_values[0])).to(equal(hex(0x2A39)))
-    expect(hex(memory.operand_values[1])).to(equal(hex(0x8010)))
-    expect(hex(memory.operand_values[2])).to(equal(hex(0xFFFF)))
+    expect(len(instruction.operand_values)).to(equal(3))
+    expect(hex(instruction.operand_values[0])).to(equal(hex(0x2A39)))
+    expect(hex(instruction.operand_values[1])).to(equal(hex(0x8010)))
+    expect(hex(instruction.operand_values[2])).to(equal(hex(0xFFFF)))
