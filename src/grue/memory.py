@@ -1,7 +1,8 @@
-"""Module for the interpreter memory."""
+"""Module to represent interpreter memory."""
 
 from enum import Enum
 
+from grue.instruction import Instruction
 from grue.logging import log
 
 FORMAT = Enum("Format", "UNKNOWN VARIABLE")
@@ -54,6 +55,8 @@ class Memory:
 
     def read_instruction(self) -> None:
         """Reads an instruction at the location of the program counter."""
+
+        instruction = Instruction(self)
 
         log("\n----------------------------------------------")
         log(f"Reading instruction at {hex(self.pc)}")
