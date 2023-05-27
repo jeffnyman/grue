@@ -51,17 +51,17 @@ class Instruction:
         # Reading a new instruction always takes place at the location
         # where the program counter is pointing.
 
-        self.current_byte: int = self.memory.pc
+        self.current_byte = self.memory.pc
 
         # Grab the operation byte from the current byte.
-        self.opcode_byte: int = self.memory.read_byte(self.memory.pc)
+        self.opcode_byte = self.memory.read_byte(self.memory.pc)
 
         # Immediately move to the next byte. This will be necessary
         # to begin looking at operands.
 
         self.current_byte += 1
 
-        self._determine_instruction_format()
+        self._determine_format()
         self._determine_operand_count()
         self._determine_opcode_number()
         self._determine_operand_types()
@@ -132,7 +132,7 @@ class Instruction:
         else:
             raise RuntimeError("Operand Count is unknown.")
 
-    def _determine_instruction_format(self) -> None:
+    def _determine_format(self) -> None:
         """Determine instruction format from opcode byte."""
 
         if self.memory.version >= 5 and self.opcode_byte == 0xBE:
