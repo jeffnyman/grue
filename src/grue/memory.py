@@ -6,6 +6,7 @@ from grue.logging import log
 
 FORMAT = Enum("Format", "UNKNOWN VARIABLE")
 OP_COUNT = Enum("OpCount", "UNKNOWN VAR")
+OP_TYPE = Enum("OpType", "UNKNOWN Variable")
 
 
 class Memory:
@@ -81,7 +82,7 @@ class Memory:
             if current_byte & 0b11000000 == 0b11000000:
                 print("First Field: Omitted")
             else:
-                raise RuntimeError("IMP: First field operand")
+                self.operand_types.append(self._type_from_bits(current_byte >> 6))
 
             # Second field
             if current_byte & 0b00110000 == 0b00110000:
@@ -100,6 +101,8 @@ class Memory:
                 print("Fourth Field: Omitted")
             else:
                 raise RuntimeError("IMP: Fourth field operand")
+
+        print(f"Operand Types: {self.operand_types}")
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
@@ -177,7 +180,7 @@ class Memory:
         elif value == 1:
             raise RuntimeError("IMP: Small Operand Type")
         else:
-            raise RuntimeError("IMP: Variable Operand Type")
+            return OP_TYPE.Variable
 
     def _read_starting_address(self) -> None:
         """Read address where zcode execution begins."""
