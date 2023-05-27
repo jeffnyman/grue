@@ -77,7 +77,7 @@ class Memory:
 
         # Need to determine the operand types.
 
-        if self.format.VARIABLE:
+        if self.format == FORMAT.VARIABLE:
             # First field
             if current_byte & 0b11000000 == 0b11000000:
                 print("First Field: Omitted")
@@ -104,7 +104,7 @@ class Memory:
             if current_byte & 0b00000011 == 0b00000011:
                 print("Fourth Field: Omitted")
             else:
-                raise RuntimeError("IMP: Fourth field operand")
+                self.operand_types.append(self._type_from_bits(current_byte & 0b00000011))
 
         print(f"Operand Types: {self.operand_types}")
 
