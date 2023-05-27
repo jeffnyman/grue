@@ -91,29 +91,16 @@ class Instruction:
         value = self.memory.read_byte(self.current_byte)
 
         if self.format == FORMAT.VARIABLE:
-            # First field
-            if value & 0b11000000 == 0b11000000:
-                print("First Field: Omitted")
-            else:
-                self.operand_types.append(self._type_from_bits(value >> 6))
+            fields = [(6, 0b11000000), (4, 0b00110000), (2, 0b00001100), (0, 0b00000011)]
 
-            # Second field
-            if value & 0b00110000 == 0b00110000:
-                print("Second Field: Omitted")
-            else:
-                self.operand_types.append(self._type_from_bits((value & 0b00110000) >> 4))
-
-            # Third field
-            if value & 0b00001100 == 0b00001100:
-                print("Third Field: Omitted")
-            else:
-                self.operand_types.append(self._type_from_bits((value & 0b00001100) >> 2))
-
-            # Fourth field
-            if value & 0b00000011 == 0b00000011:
-                return
-            else:
-                self.operand_types.append(self._type_from_bits(value & 0b00000011))
+            for index, (bits, mask) in enumerate(fields):
+                if value & mask == mask:
+                    log(f"Field {index + 1}: Omitted")
+                    return
+                else:
+                    self.operand_types.append(
+                        self._type_from_bits((value >> bits) & 0b11)
+                    )
 
     def _determine_opcode_number(self) -> None:
         """Determine opcode number from format and operation byte."""
