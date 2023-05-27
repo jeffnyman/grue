@@ -6,7 +6,7 @@ from grue.logging import log
 
 FORMAT = Enum("Format", "UNKNOWN VARIABLE")
 OP_COUNT = Enum("OpCount", "UNKNOWN VAR")
-OP_TYPE = Enum("OpType", "UNKNOWN Variable")
+OP_TYPE = Enum("OpType", "UNKNOWN Variable Large")
 
 
 class Memory:
@@ -88,7 +88,9 @@ class Memory:
             if current_byte & 0b00110000 == 0b00110000:
                 print("Second Field: Omitted")
             else:
-                raise RuntimeError("IMP: Second field operand")
+                self.operand_types.append(
+                    self._type_from_bits((current_byte & 0b00110000) >> 4)
+                )
 
             # Third field
             if current_byte & 0b00001100 == 0b00001100:
@@ -176,7 +178,7 @@ class Memory:
         """Determine operand type by binary digits."""
 
         if value == 0:
-            raise RuntimeError("IMP: Large Operand Type")
+            return OP_TYPE.Large
         elif value == 1:
             raise RuntimeError("IMP: Small Operand Type")
         else:
