@@ -82,19 +82,7 @@ class Memory:
 
         current_byte += 1
 
-        # Determine the operand valeus.
-
-        for operand_type in self.operand_types:
-            if operand_type == OP_TYPE.Large:
-                self.operand_values.append(self.read_word(current_byte))
-                current_byte += 2
-            if operand_type == OP_TYPE.Small:
-                raise RuntimeError("IMP: Type amall operand value.")
-            if operand_type == OP_TYPE.Variable:
-                raise RuntimeError("IMP: Type variable operand value.")
-
-        values = [hex(num)[2:].rjust(4, "0") for num in self.operand_values]
-        log(f"Operand Values: {values}")
+        self._determine_operand_values(current_byte)
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
@@ -127,6 +115,19 @@ class Memory:
             return 4 * address + (8 * self.strings_offset)
 
         return 8 * address
+
+    def _determine_operand_values(self, current_byte: int) -> None:
+        for operand_type in self.operand_types:
+            if operand_type == OP_TYPE.Large:
+                self.operand_values.append(self.read_word(current_byte))
+                current_byte += 2
+            if operand_type == OP_TYPE.Small:
+                raise RuntimeError("IMP: Type amall operand value.")
+            if operand_type == OP_TYPE.Variable:
+                raise RuntimeError("IMP: Type variable operand value.")
+
+        values = [hex(num)[2:].rjust(4, "0") for num in self.operand_values]
+        log(f"Operand Values: {values}")
 
     def _determine_operand_types(self, current_byte: int) -> None:
         value = self.read_byte(current_byte)
