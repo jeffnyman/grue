@@ -74,36 +74,7 @@ class Memory:
         self._determine_instruction_format()
         self._determine_operand_count()
         self._determine_opcode_number()
-
-        # Need to determine the operand types.
-        value = self.read_byte(current_byte)
-
-        if self.format == FORMAT.VARIABLE:
-            # First field
-            if value & 0b11000000 == 0b11000000:
-                print("First Field: Omitted")
-            else:
-                self.operand_types.append(self._type_from_bits(value >> 6))
-
-            # Second field
-            if value & 0b00110000 == 0b00110000:
-                print("Second Field: Omitted")
-            else:
-                self.operand_types.append(self._type_from_bits((value & 0b00110000) >> 4))
-
-            # Third field
-            if value & 0b00001100 == 0b00001100:
-                print("Third Field: Omitted")
-            else:
-                self.operand_types.append(self._type_from_bits((value & 0b00001100) >> 2))
-
-            # Fourth field
-            if value & 0b00000011 == 0b00000011:
-                print("Fourth Field: Omitted")
-            else:
-                self.operand_types.append(self._type_from_bits(value & 0b00000011))
-
-        print(f"Operand Types: {self.operand_types}")
+        self._determine_operand_types(current_byte)
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
@@ -136,6 +107,36 @@ class Memory:
             return 4 * address + (8 * self.strings_offset)
 
         return 8 * address
+
+    def _determine_operand_types(self, current_byte: int) -> None:
+        value = self.read_byte(current_byte)
+
+        if self.format == FORMAT.VARIABLE:
+            # First field
+            if value & 0b11000000 == 0b11000000:
+                print("First Field: Omitted")
+            else:
+                self.operand_types.append(self._type_from_bits(value >> 6))
+
+            # Second field
+            if value & 0b00110000 == 0b00110000:
+                print("Second Field: Omitted")
+            else:
+                self.operand_types.append(self._type_from_bits((value & 0b00110000) >> 4))
+
+            # Third field
+            if value & 0b00001100 == 0b00001100:
+                print("Third Field: Omitted")
+            else:
+                self.operand_types.append(self._type_from_bits((value & 0b00001100) >> 2))
+
+            # Fourth field
+            if value & 0b00000011 == 0b00000011:
+                return
+            else:
+                self.operand_types.append(self._type_from_bits(value & 0b00000011))
+
+        log(f"Operand Types: {self.operand_types}")
 
     def _determine_opcode_number(self) -> None:
         """Determine opcode number from format and operation byte."""
