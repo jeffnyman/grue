@@ -26,6 +26,7 @@ class Memory:
         self.strings_offset: int = self.read_word(0x2A)
 
         self.pc: int = 0
+        self.current_byte: int
 
         self.opcode_byte: int
         self.opcode_number: int
@@ -61,7 +62,7 @@ class Memory:
         # Reading a new instruction always takes place at the location
         # where the program counter is pointing.
 
-        current_byte: int = self.pc
+        self.current_byte: int = self.pc
 
         # Grab the operation byte from the current byte.
         self.opcode_byte: int = self.read_byte(self.pc)
@@ -70,19 +71,19 @@ class Memory:
         # Immediately move to the next byte. This will be necessary
         # to begin looking at operands.
 
-        current_byte += 1
+        self.current_byte += 1
 
         self._determine_instruction_format()
         self._determine_operand_count()
         self._determine_opcode_number()
-        self._determine_operand_types(current_byte)
+        self._determine_operand_types()
 
         # Have to move to the next byte after getting operand types.
         # This may differ for non-variable formats.
 
-        current_byte += 1
+        self.current_byte += 1
 
-        self._determine_operand_values(current_byte)
+        self._determine_operand_values()
 
     def read_byte(self, address: int) -> int:
         """Reads a byte from the specified memory address."""
@@ -116,13 +117,13 @@ class Memory:
 
         return 8 * address
 
-    def _determine_operand_values(self, current_byte: int) -> None:
+    def _determine_operand_values(self) -> None:
         """Read operand value based on operand type."""
 
         for operand_type in self.operand_types:
             if operand_type == OP_TYPE.Large:
-                self.operand_values.append(self.read_word(current_byte))
-                current_byte += 2
+                self.operand_values.append(self.read_word(self.current_byte))
+                self.current_byte += 2
             if operand_type == OP_TYPE.Small:
                 raise RuntimeError("IMP: Type amall operand value.")
             if operand_type == OP_TYPE.Variable:
@@ -131,10 +132,10 @@ class Memory:
         values = [hex(num)[2:].rjust(4, "0") for num in self.operand_values]
         log(f"Operand Values: {values}")
 
-    def _determine_operand_types(self, current_byte: int) -> None:
+    def _determine_operand_types(self) -> None:
         """Determine operand type from the byte being read."""
 
-        value = self.read_byte(current_byte)
+        value = self.read_byte(self.current_byte)
 
         if self.format == FORMAT.VARIABLE:
             # First field
