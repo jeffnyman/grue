@@ -13,7 +13,7 @@ class Memory:
     """Handles the private interpreter memory implementation."""
 
     def __init__(self, data: bytes) -> None:
-        self.data = data
+        self.data: bytes = data
 
         self.version: int = self.read_byte(0x00)
         self.release_number: int = self.read_word(0x2)
