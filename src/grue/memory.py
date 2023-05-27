@@ -76,35 +76,32 @@ class Memory:
         self._determine_opcode_number()
 
         # Need to determine the operand types.
+        value = self.read_byte(current_byte)
 
         if self.format == FORMAT.VARIABLE:
             # First field
-            if current_byte & 0b11000000 == 0b11000000:
+            if value & 0b11000000 == 0b11000000:
                 print("First Field: Omitted")
             else:
-                self.operand_types.append(self._type_from_bits(current_byte >> 6))
+                self.operand_types.append(self._type_from_bits(value >> 6))
 
             # Second field
-            if current_byte & 0b00110000 == 0b00110000:
+            if value & 0b00110000 == 0b00110000:
                 print("Second Field: Omitted")
             else:
-                self.operand_types.append(
-                    self._type_from_bits((current_byte & 0b00110000) >> 4)
-                )
+                self.operand_types.append(self._type_from_bits((value & 0b00110000) >> 4))
 
             # Third field
-            if current_byte & 0b00001100 == 0b00001100:
+            if value & 0b00001100 == 0b00001100:
                 print("Third Field: Omitted")
             else:
-                self.operand_types.append(
-                    self._type_from_bits((current_byte & 0b00001100) >> 2)
-                )
+                self.operand_types.append(self._type_from_bits((value & 0b00001100) >> 2))
 
             # Fourth field
-            if current_byte & 0b00000011 == 0b00000011:
+            if value & 0b00000011 == 0b00000011:
                 print("Fourth Field: Omitted")
             else:
-                self.operand_types.append(self._type_from_bits(current_byte & 0b00000011))
+                self.operand_types.append(self._type_from_bits(value & 0b00000011))
 
         print(f"Operand Types: {self.operand_types}")
 
