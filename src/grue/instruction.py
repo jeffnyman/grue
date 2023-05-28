@@ -7,6 +7,7 @@ if TYPE_CHECKING:
     from grue.memory import Memory
 
 from grue.logging import log
+from grue.opcodes import opcodes
 
 
 FORMAT = Enum("Format", "UNKNOWN VARIABLE")
@@ -23,6 +24,7 @@ class Instruction:
         self.current_byte: int
 
         self.opcode_byte: int
+        self.opcode_name: str
         self.opcode_number: int
         self.format: FORMAT = FORMAT.UNKNOWN
         self.operand_count: OP_COUNT = OP_COUNT.UNKNOWN
@@ -32,7 +34,8 @@ class Instruction:
     def details(self) -> None:
         """Display information of instruction parts."""
 
-        log(f"Opcode byte: {self.opcode_byte} ({hex(self.opcode_byte)})")
+        log(f"Opcode Byte: {self.opcode_byte} ({hex(self.opcode_byte)})")
+        log(f"Opocde Name: {self.opcode_name}")
         log(f"Format: {self.format.name}")
         log(f"Operand Count: {self.operand_count.name}")
         log(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")
@@ -64,6 +67,7 @@ class Instruction:
         self._determine_format()
         self._determine_operand_count()
         self._determine_opcode_number()
+        self._determine_opcode_name()
         self._determine_operand_types()
 
         # Have to move to the next byte after getting operand types.
@@ -101,6 +105,19 @@ class Instruction:
                     self.operand_types.append(
                         self._type_from_bits((value >> bits) & 0b11)
                     )
+
+    def _determine_opcode_name(self) -> None:
+        """Determine mnemonic for opcode."""
+
+        version = self.memory.version
+        byte = self.opcode_byte
+        number = self.opcode_number
+
+        for opcode in opcodes:
+            if opcode.matches(version=version, byte=byte, number=number):
+                self.opcode_name = opcode.name
+
+        return None
 
     def _determine_opcode_number(self) -> None:
         """Determine opcode number from format and operation byte."""
