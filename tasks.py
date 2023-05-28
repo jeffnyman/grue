@@ -26,6 +26,9 @@ def clean(c):
     c.run(
         "poetry run python -c \"import shutil; shutil.rmtree('./.mypy_cache', ignore_errors=True)\""
     )
+    c.run(
+        "poetry run python -c \"import os; os.remove('.coverage') if os.path.exists('.coverage') else None\""
+    )
 
 
 @task
