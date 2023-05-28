@@ -52,8 +52,22 @@ per-file-ignores = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--spec"
+addopts = "--spec --cov"
 spec_test_format = "{result} {docstring_summary}"
+
+[tool.coverage.run]
+branch = true
+source = ["grue"]
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+show_missing = true
 
 [tool.mypy]
 
@@ -68,6 +82,8 @@ python = "^3.8.2"
 black = "^23.3.0"
 pytest = "^7.3.1"
 pytest-spec = "^3.2.0"
+pytest-cov = "^4.1.0"
+coverage = {version = "^7.2.6", extras = ["toml"]}
 expects = "^0.9.0"
 flake8 = "^6.0.0"
 flake8-pyproject = "^1.2.3"
