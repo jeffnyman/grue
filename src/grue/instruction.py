@@ -59,15 +59,16 @@ class Instruction:
         # Grab the operation byte from the current byte.
         self.opcode_byte = self.memory.read_byte(self.memory.pc)
 
-        # Immediately move to the next byte. This will be necessary
-        # to begin looking at operands.
-
-        self.current_byte += 1
-
         self._determine_format()
         self._determine_operand_count()
         self._determine_opcode_number()
         self._determine_opcode_name()
+
+        # Have to move to the next byte. This is necessary to begin
+        # looking at operands.
+
+        self.current_byte += 1
+
         self._determine_operand_types()
 
         # Have to move to the next byte after getting operand types.
