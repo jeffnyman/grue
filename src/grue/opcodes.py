@@ -17,4 +17,7 @@ class Opcodes:
         return result
 
 
-opcodes = [Opcodes(name="call", versions=[1, 2, 3], id=(224, 0))]
+opcodes = [
+    Opcodes(name="call", versions=[1, 2, 3], id=(224, 0)),
+    Opcodes(name="call_vs", versions=[5, 6, 7, 8], id=(224, 0)),
+]
