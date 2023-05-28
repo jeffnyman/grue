@@ -10,7 +10,7 @@ from grue.logging import log
 from grue.opcodes import opcodes
 
 
-FORMAT = Enum("Format", "UNKNOWN VARIABLE")
+FORMAT = Enum("Format", "UNKNOWN EXTENDED VARIABLE SHORT LONG")
 OP_COUNT = Enum("OpCount", "UNKNOWN VAR")
 OP_TYPE = Enum("OpType", "UNKNOWN Variable Large Small")
 
@@ -141,13 +141,13 @@ class Instruction:
         """Determine instruction format from opcode byte."""
 
         if self.memory.version >= 5 and self.opcode_byte == 0xBE:
-            raise RuntimeError("IMP: Handle EXTENDED Format")
+            self.format = FORMAT.EXTENDED
         elif self.opcode_byte & 0b11000000 == 0b11000000:
             self.format = FORMAT.VARIABLE
         elif self.opcode_byte & 0b10000000 == 0b10000000:
-            raise RuntimeError("IMP: Handle SHORT Format")
+            self.format = FORMAT.SHORT
         else:
-            raise RuntimeError("IMP: Handle LONG Format")
+            self.format = FORMAT.LONG
 
         if self.format.name == "UNKNOWN":
             raise RuntimeError("Instruction format is unknown.")
