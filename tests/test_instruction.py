@@ -102,3 +102,12 @@ def test_get_the_first_instruction_operand_values(zork1_z3_program) -> None:
     expect(hex(instruction.operand_values[0])).to(equal(hex(0x2A39)))
     expect(hex(instruction.operand_values[1])).to(equal(hex(0x8010)))
     expect(hex(instruction.operand_values[2])).to(equal(hex(0xFFFF)))
+
+
+def test_get_the_first_instruction_opcode_name(zork1_z3_program) -> None:
+    """Grue estabishes the opcode name of an instruction."""
+
+    memory = zork1_z3_program
+    instruction = memory.read_instruction()
+
+    expect(instruction.opcode_name).to(equal("call"))
