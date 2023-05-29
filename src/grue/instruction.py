@@ -69,7 +69,21 @@ class Instruction:
 
         self.current_byte += 1
 
+        # Now we read the opcode number. The opcode byte determines
+        # the opcode number, so it's okay that the current byte has been
+        # moved forward since the method below does not rely on it.
+
         self._determine_opcode_number()
+
+        # If we're dealing with opcode byte 190, then the above attempt
+        # to get the opcode number was effectively useless. Instead we
+        # we have to read the opcode number from the current byte, which
+        # has been moved to the second byte, per above. We then have to
+        # move the current byte forward yet again.
+
+        if self.memory.version >= 5 and self.opcode_byte == 0xBE:
+            self.opcode_number = self.memory.read_byte(self.current_byte)
+            self.current_byte += 1
 
         self._determine_opcode_name()
 
