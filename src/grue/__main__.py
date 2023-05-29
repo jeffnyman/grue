@@ -19,6 +19,7 @@ def main() -> int:
     print("GRUE Z-Machine Interpreter")
 
     setup_logging("log.txt")
+    setup_logging("log_opcodes.txt")
 
     data = Loader.load(sys.argv[1])
     memory = Memory(data)

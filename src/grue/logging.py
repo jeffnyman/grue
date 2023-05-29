@@ -16,3 +16,8 @@ def log(message: str) -> None:
 
     with open("log.txt", "a") as logfile:
         print(message, file=logfile)
+
+
+def log_opcode(message: str) -> None:
+    with open("log_opcodes.txt", "a") as logfile:
+        print(message, file=logfile)
