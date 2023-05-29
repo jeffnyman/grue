@@ -99,7 +99,7 @@ class Instruction:
             fields = [(6, 0b11000000), (4, 0b00110000), (2, 0b00001100), (0, 0b00000011)]
 
             for index, (bits, mask) in enumerate(fields):
-                if value & mask == mask:
+                if value & mask == mask:  # noqa R505
                     log(f"Field {index + 1}: Omitted")
                     return
                 else:
@@ -117,8 +117,6 @@ class Instruction:
         for opcode in opcodes:
             if opcode.matches(version=version, byte=byte, number=number):
                 self.opcode_name = opcode.name
-
-        return None
 
     def _determine_opcode_number(self) -> None:
         """Determine opcode number from format and operation byte."""
@@ -170,7 +168,8 @@ class Instruction:
 
         if value == 0:
             return OP_TYPE.Large
-        elif value == 1:
+
+        if value == 1:
             return OP_TYPE.Small
-        else:
-            return OP_TYPE.Variable
+
+        return OP_TYPE.Variable
