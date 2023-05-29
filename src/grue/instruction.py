@@ -95,17 +95,51 @@ class Instruction:
 
         value = self.memory.read_byte(self.current_byte)
 
-        if self.format == FORMAT.VARIABLE:
-            fields = [(6, 0b11000000), (4, 0b00110000), (2, 0b00001100), (0, 0b00000011)]
+        if self.format == FORMAT.SHORT:
+            if self.opcode_byte & 0b00100000 == 0b00100000:
+                self.operand_types = [OP_TYPE.Variable]
+            elif self.opcode_byte & 0b00010000 == 0b00010000:
+                self.operand_types = [OP_TYPE.Small]
+            elif self.opcode_byte & 0b00000000 == 0b00000000:
+                self.operand_types = [OP_TYPE.Large]
 
-            for index, (bits, mask) in enumerate(fields):
-                if value & mask == mask:  # noqa R505
-                    log(f"Field {index + 1}: Omitted")
-                    return
-                else:
-                    self.operand_types.append(
-                        self._type_from_bits((value >> bits) & 0b11)
-                    )
+        if self.format == FORMAT.LONG:
+            # Check first operand
+            if self.opcode_byte & 0b01000000 == 0b01000000:
+                self.operand_types.append(OP_TYPE.Variable)
+            else:
+                self.operand_types.append(OP_TYPE.Small)
+
+            # Check second operand
+            if self.opcode_byte & 0b00100000 == 0b00100000:
+                self.operand_types.append(OP_TYPE.Variable)
+            else:
+                self.operand_types.append(OP_TYPE.Small)
+
+        if self.format in [FORMAT.VARIABLE, FORMAT.EXTENDED]:
+            # First field
+            if value & 0b11000000 == 0b11000000:
+                return
+            else:
+                self.operand_types.append(self._type_from_bits(value >> 6))
+
+            # Second field
+            if value & 0b00110000 == 0b00110000:
+                return
+            else:
+                self.operand_types.append(self._type_from_bits((value & 0b00110000) >> 4))
+
+            # Third field
+            if value & 0b00001100 == 0b00001100:
+                return
+            else:
+                self.operand_types.append(self._type_from_bits((value & 0b00001100) >> 2))
+
+            # Fourth field
+            if value & 0b00000011 == 0b00000011:
+                return
+            else:
+                self.operand_types.append(self._type_from_bits(value & 0b00000011))
 
     def _determine_opcode_name(self) -> None:
         """Determine mnemonic for opcode."""
