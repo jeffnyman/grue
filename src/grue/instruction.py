@@ -121,8 +121,11 @@ class Instruction:
     def _determine_opcode_number(self) -> None:
         """Determine opcode number from format and operation byte."""
 
-        if self.format == FORMAT.VARIABLE:
+        if self.format in [FORMAT.LONG, FORMAT.VARIABLE]:
             self.opcode_number = self.opcode_byte & 0b00011111
+
+        if self.format in [FORMAT.SHORT]:
+            self.opcode_number = self.opcode_byte & 0b00001111
 
     def _determine_operand_count(self) -> None:
         """Determine operand count from the format and operation byte."""
