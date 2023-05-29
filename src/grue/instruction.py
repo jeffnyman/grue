@@ -61,9 +61,9 @@ class Instruction:
 
         self._determine_format()
         self._determine_opcode_number()
+        self._determine_opcode_name()
 
         self._determine_operand_count()
-        self._determine_opcode_name()
 
         # Have to move to the next byte. This is necessary to begin
         # looking at operands.
