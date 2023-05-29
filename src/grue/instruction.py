@@ -85,10 +85,14 @@ class Instruction:
             if operand_type == OP_TYPE.Large:
                 self.operand_values.append(self.memory.read_word(self.current_byte))
                 self.current_byte += 2
+
             if operand_type == OP_TYPE.Small:
-                raise RuntimeError("IMP: Type amall operand value.")
+                self.operand_values.append(self.memory.read_byte(self.current_byte))
+                self.current_byte += 1
+
             if operand_type == OP_TYPE.Variable:
-                raise RuntimeError("IMP: Type variable operand value.")
+                self.operand_values.append(self.memory.read_byte(self.current_byte))
+                self.current_byte += 1
 
     def _determine_operand_types(self) -> None:
         """Determine operand type from the byte being read."""
