@@ -11,7 +11,7 @@ from grue.opcodes import opcodes
 
 
 FORMAT = Enum("Format", "UNKNOWN EXTENDED VARIABLE SHORT LONG")
-OP_COUNT = Enum("OpCount", "UNKNOWN VAR")
+OP_COUNT = Enum("OpCount", "UNKNOWN OP0 OP1 OP2 VAR")
 OP_TYPE = Enum("OpType", "UNKNOWN Variable Large Small")
 
 
@@ -129,12 +129,25 @@ class Instruction:
     def _determine_operand_count(self) -> None:
         """Determine operand count from the format and operation byte."""
 
+        if self.format == FORMAT.SHORT:
+            if self.opcode_byte & 0b00110000 == 0b00110000:
+                self.operand_count = OP_COUNT.OP0
+            else:
+                self.operand_count = OP_COUNT.OP1
+
+        if self.format == FORMAT.LONG:
+            self.operand_count = OP_COUNT.OP2
+
         if self.format == FORMAT.VARIABLE:
             if self.opcode_byte & 0b00100000 == 0b00100000:
                 self.operand_count = OP_COUNT.VAR
             else:
-                raise RuntimeError("IMP: Handle non-VAR operand count for VARIABLE.")
-        else:
+                self.operand_count = OP_COUNT.OP2
+
+        if self.format == FORMAT.EXTENDED:
+            self.operand_count = OP_COUNT.VAR
+
+        if self.operand_count.name == "UNKNOWN":
             raise RuntimeError("Operand Count is unknown.")
 
     def _determine_format(self) -> None:
