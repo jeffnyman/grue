@@ -60,15 +60,20 @@ class Instruction:
         self.opcode_byte = self.memory.read_byte(self.memory.pc)
 
         self._determine_format()
+
+        # With the format known, it's possible to get the opcode number.
+        # This number will be part of the current byte unless it's the
+        # case that the opcode byte is 190. In that case, the opcode
+        # number will be in the second byte. Either way, the current
+        # byte can be moved forward.
+
+        self.current_byte += 1
+
         self._determine_opcode_number()
+
         self._determine_opcode_name()
 
         self._determine_operand_count()
-
-        # Have to move to the next byte. This is necessary to begin
-        # looking at operands.
-
-        self.current_byte += 1
 
         self._determine_operand_types()
 
