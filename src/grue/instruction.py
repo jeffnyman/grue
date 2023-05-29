@@ -89,22 +89,23 @@ class Instruction:
 
         self._determine_operand_count()
 
-        if self.format in [FORMAT.VARIABLE, FORMAT.EXTENDED]:
-            self._determine_operand_types()
-
-            # It's necessary to move to the next next byte after getting
-            # the operand types in these formats. This is not needed for
-            # the other formats.
-            self.current_byte += 1
-
-            # There is a special circumstance of "double-variable" opcodes.
-            # In this case, another set of operands needs to be read in and
-            # then the current byte has to be incremented past those.
-            if self.opcode_name in ["call_vs2", "call_vn2"]:
+        if self.operand_count != OP_COUNT.OP0:
+            if self.format in [FORMAT.VARIABLE, FORMAT.EXTENDED]:
                 self._determine_operand_types()
+
+                # It's necessary to move to the next next byte after getting
+                # the operand types in these formats. This is not needed for
+                # the other formats.
                 self.current_byte += 1
-        else:
-            self._determine_operand_types()
+
+                # There is a special circumstance of "double-variable" opcodes.
+                # In this case, another set of operands needs to be read in and
+                # then the current byte has to be incremented past those.
+                if self.opcode_name in ["call_vs2", "call_vn2"]:
+                    self._determine_operand_types()
+                    self.current_byte += 1
+            else:
+                self._determine_operand_types()
 
         self._determine_operand_values()
 
