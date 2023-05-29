@@ -89,12 +89,15 @@ class Instruction:
 
         self._determine_operand_count()
 
-        self._determine_operand_types()
+        if self.format in [FORMAT.VARIABLE, FORMAT.EXTENDED]:
+            self._determine_operand_types()
 
-        # Have to move to the next byte after getting operand types.
-        # This may differ for non-variable formats.
-
-        self.current_byte += 1
+            # It's necessary to move to the next next byte after getting
+            # the operand types in these formats. This is not needed for
+            # the other formats.
+            self.current_byte += 1
+        else:
+            self._determine_operand_types()
 
         self._determine_operand_values()
 
