@@ -60,8 +60,9 @@ class Instruction:
         self.opcode_byte = self.memory.read_byte(self.memory.pc)
 
         self._determine_format()
-        self._determine_operand_count()
         self._determine_opcode_number()
+
+        self._determine_operand_count()
         self._determine_opcode_name()
 
         # Have to move to the next byte. This is necessary to begin
