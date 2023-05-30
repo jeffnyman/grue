@@ -45,15 +45,17 @@ class Instruction:
             f"{bin(self.opcode_byte)[2:]:>08}"
         )
 
-        log(f"Opcode Byte: {self.opcode_byte} ({hex(self.opcode_byte)})")
         log(f"Opocde Name: {self.opcode_name}")
+        log(f"Opcode Byte: {self.opcode_byte} ({hex(self.opcode_byte)})")
+        log(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")
         log(f"Format: {self.format.name}")
         log(f"Operand Count: {self.operand_count.name}")
-        log(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")
-        log(f"Operand Types: {self.operand_types}")
 
-        values = [hex(num)[2:].rjust(4, "0") for num in self.operand_values]
-        log(f"Operand Values: {values}")
+        operand_types = [operand_type.name for operand_type in self.operand_types]
+        operand_values = [hex(num)[2:].rjust(4, "0") for num in self.operand_values]
+
+        log(f"Operand Types: {operand_types}")
+        log(f"Operand Values: {operand_values}")
 
         if self.store_variable is not None:
             log("The opcode stores a value.")
