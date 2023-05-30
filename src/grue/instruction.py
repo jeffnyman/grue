@@ -276,6 +276,8 @@ class Instruction:
             raise RuntimeError("Instruction format is unknown.")
 
     def _is_store_instruction(self) -> bool:
+        """Check if an opcode should store a value."""
+        
         opcode_match = self._find_matching_opcode()
 
         if opcode_match is not None and opcode_match.store:
@@ -284,6 +286,8 @@ class Instruction:
             return False
 
     def _find_matching_opcode(self) -> "Opcodes":
+        """Check the list of opcodes instances for a matching value."""
+        
         version = self.memory.version
         byte = self.opcode_byte
         number = self.opcode_number
