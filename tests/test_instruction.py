@@ -120,3 +120,12 @@ def test_get_the_first_instruction_opcode_name_z5(zork1_z5_program) -> None:
     instruction = memory.read_instruction()
 
     expect(instruction.opcode_name).to(equal("call_vs"))
+
+
+def test_get_the_first_instruction_store_value(zork1_z3_program) -> None:
+    """Grue determines the store value of an instruction."""
+
+    memory = zork1_z3_program
+    instruction = memory.read_instruction()
+
+    expect(instruction.store_variable).to(equal(0))
