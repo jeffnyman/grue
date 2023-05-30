@@ -31,6 +31,7 @@ class Instruction:
         self.operand_count: OP_COUNT = OP_COUNT.UNKNOWN
         self.operand_types: list = []
         self.operand_values: list = []
+        self.store_variable: int = None
 
     def details(self) -> None:
         """Display information of instruction parts."""
@@ -44,6 +45,12 @@ class Instruction:
 
         values = [hex(num)[2:].rjust(4, "0") for num in self.operand_values]
         log(f"Operand Values: {values}")
+
+        if self.store_variable is not None:
+            log("The opcode stores a value.")
+            log(f"Store Variable: {self.store_variable}")
+        else:
+            log("The opcode does not store a value.")
 
     def decode(self) -> None:
         """Determine all details of an instruction."""
@@ -109,6 +116,11 @@ class Instruction:
                 self._determine_operand_types()
 
         self._determine_operand_values()
+
+        # Determine if the instruction is one that stores a value.
+        if self._is_store_instruction():
+            self.store_variable = self.memory.read_byte(self.current_byte)
+            self.current_byte += 1
 
     def _determine_operand_values(self) -> None:
         """Read operand value based on operand type."""
@@ -235,6 +247,14 @@ class Instruction:
 
         if self.format.name == "UNKNOWN":
             raise RuntimeError("Instruction format is unknown.")
+
+    def _is_store_instruction(self) -> bool:
+        opcode_match = self._find_matching_opcode()
+
+        if opcode_match is not None and opcode_match.store:
+            return True
+        else:
+            return False
 
     def _find_matching_opcode(self) -> "Opcodes":
         version = self.memory.version
