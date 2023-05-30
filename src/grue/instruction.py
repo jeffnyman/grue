@@ -45,6 +45,15 @@ class Instruction:
             f"{bin(self.opcode_byte)[2:]:>08}"
         )
 
+        instruction_bytes = self.memory.data[
+            self.memory.pc : self.memory.pc + self.length
+        ]
+        instruction_bytes_hex = " ".join([f"{byte:02x}" for byte in instruction_bytes])
+
+        self.memory.txd.add(
+            f"{hex(self.memory.pc)[2:]}: {instruction_bytes_hex} {self.opcode_name}"
+        )
+
         log(f"Opocde Name: {self.opcode_name}")
         log(f"Opcode Byte: {self.opcode_byte} ({hex(self.opcode_byte)})")
         log(f"Opcode Number: {self.opcode_number} ({hex(self.opcode_number)})")

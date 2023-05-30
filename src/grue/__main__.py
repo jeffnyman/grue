@@ -28,6 +28,8 @@ def main() -> int:
     instruction: "Instruction" = memory.read_instruction()
     instruction.details()
 
+    memory.txd.generate()
+
     return 0
 
 

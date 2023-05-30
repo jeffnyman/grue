@@ -3,6 +3,7 @@
 
 from grue.instruction import Instruction
 from grue.logging import log
+from grue.txd import Txd
 
 
 class Memory:
@@ -10,6 +11,8 @@ class Memory:
 
     def __init__(self, data: bytes) -> None:
         self.data: bytes = data
+
+        self.txd = Txd()
 
         self.version: int = self.read_byte(0x00)
         self.release_number: int = self.read_word(0x2)
