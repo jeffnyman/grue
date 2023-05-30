@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from grue.memory import Memory
     from grue.opcodes import Opcodes
 
-from grue.logging import log
+from grue.logging import log, log_opcode
 from grue.opcodes import opcodes
 
 
@@ -36,6 +36,14 @@ class Instruction:
 
     def details(self) -> None:
         """Display information of instruction parts."""
+
+        log_opcode(
+            f"{self.operand_count.name:<3} | "
+            f"{self.opcode_number:>2} | "
+            f"{self.opcode_byte:<3} | "
+            f"{hex(self.opcode_byte)[2:]:2} | "
+            f"{bin(self.opcode_byte)[2:]:>08}"
+        )
 
         log(f"Opcode Byte: {self.opcode_byte} ({hex(self.opcode_byte)})")
         log(f"Opocde Name: {self.opcode_name}")
