@@ -129,3 +129,12 @@ def test_get_the_first_instruction_store_value(zork1_z3_program) -> None:
     instruction = memory.read_instruction()
 
     expect(instruction.store_variable).to(equal(0))
+
+
+def test_get_the_first_instruction_length(zork1_z3_program) -> None:
+    """Grue determines the length of an instruction."""
+
+    memory = zork1_z3_program
+    instruction = memory.read_instruction()
+
+    expect(instruction.length).to(equal(9))

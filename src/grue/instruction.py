@@ -32,6 +32,7 @@ class Instruction:
         self.operand_types: list = []
         self.operand_values: list = []
         self.store_variable: int = None
+        self.length: int
 
     def details(self) -> None:
         """Display information of instruction parts."""
@@ -51,6 +52,8 @@ class Instruction:
             log(f"Store Variable: {self.store_variable}")
         else:
             log("The opcode does not store a value.")
+
+        log(f"Instruction Length: {self.length}")
 
     def decode(self) -> None:
         """Determine all details of an instruction."""
@@ -121,6 +124,11 @@ class Instruction:
         if self._is_store_instruction():
             self.store_variable = self.memory.read_byte(self.current_byte)
             self.current_byte += 1
+
+        # Determine the instruction length. Since the program counter will be
+        # pointing to the start of the instruction, the length is simply the
+        # location of the current byte relative to the program counter.
+        self.length = self.current_byte - self.memory.pc
 
     def _determine_operand_values(self) -> None:
         """Read operand value based on operand type."""
