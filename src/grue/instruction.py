@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from grue.memory import Memory
+    from grue.opcodes import Opcodes
 
 from grue.logging import log
 from grue.opcodes import opcodes
@@ -175,13 +176,17 @@ class Instruction:
     def _determine_opcode_name(self) -> None:
         """Determine mnemonic for opcode."""
 
-        version = self.memory.version
-        byte = self.opcode_byte
-        number = self.opcode_number
+        opcode_match = self._find_matching_opcode()
 
-        for opcode in opcodes:
-            if opcode.matches(version=version, byte=byte, number=number):
-                self.opcode_name = opcode.name
+        if opcode_match is not None:
+            self.opcode_name = opcode_match.name
+        else:
+            message = (
+                f"No opcode was found matching {self.opcode_byte}:{self.opcode_number} "
+                f"({self.operand_count.name}) "
+                f"for version {self.memory.version}."
+            )
+            raise RuntimeError(message)
 
     def _determine_opcode_number(self) -> None:
         """Determine opcode number from format and operation byte."""
@@ -230,6 +235,17 @@ class Instruction:
 
         if self.format.name == "UNKNOWN":
             raise RuntimeError("Instruction format is unknown.")
+
+    def _find_matching_opcode(self) -> "Opcodes":
+        version = self.memory.version
+        byte = self.opcode_byte
+        number = self.opcode_number
+
+        for opcode in opcodes:
+            if opcode.matches(version=version, byte=byte, number=number):
+                return opcode
+
+        return None
 
     def _type_from_bits(self, value: int) -> OP_TYPE:
         """Determine operand type by binary digits."""
