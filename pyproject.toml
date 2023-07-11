@@ -22,6 +22,9 @@ classifiers = [
     "Intended Audience :: End Users/Desktop",
     "Topic :: Games/Entertainment"]
 
+[tool.poetry.scripts]
+grue = "grue.__main__:main"
+
 [tool.poetry.dependencies]
 python = "^3.8.2"
 
