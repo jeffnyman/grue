@@ -1,8 +1,11 @@
+import importlib.metadata
 import sys
 
 
 def main() -> int:
-    print("\nGrue Z-Machine Interpreter\n")
+    version = importlib.metadata.version("grue")
+
+    print(f"\nGrue Z-Machine Interpreter (Version: {version})\n")
 
     return 0
 
