@@ -1,11 +1,10 @@
-import importlib.metadata
 import sys
+
+from grue import __version__
 
 
 def main() -> int:
-    version = importlib.metadata.version("grue")
-
-    print(f"\nGrue Z-Machine Interpreter (Version: {version})\n")
+    print(f"\nGrue Z-Machine Interpreter (Version: {__version__})\n")
 
     return 0
 
