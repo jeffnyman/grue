@@ -2,6 +2,7 @@ import sys
 from typing import Optional
 
 from grue import __version__
+from grue.cli import process_arguments
 
 
 def main(args: Optional[list] = None) -> int:
@@ -11,6 +12,8 @@ def main(args: Optional[list] = None) -> int:
 
     if not args:
         args = sys.argv[1:]
+
+    process_arguments(args)
 
     return 0
 

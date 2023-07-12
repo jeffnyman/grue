@@ -34,6 +34,7 @@ statistics = "true"
 show-source = "true"
 no-accept-encodings = "true"
 inline-quotes = "double"
+max-line-length = 88
 
 # ANN001: Missing type annotation for function argument.
 per-file-ignores = ["tests/*:ANN001"]
