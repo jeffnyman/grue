@@ -99,3 +99,18 @@ def test_no_program_provided(capsys) -> None:
 
     error_text = "the following arguments are required: program"
     expect(result).to(contain(error_text))
+
+
+def test_handle_invalid_arguments(capsys) -> None:
+    """Indicates when an invalid argument is provided."""
+
+    from grue.__main__ import main
+
+    with pytest.raises(SystemExit):
+        main(["zork1.z3", "--invalid"])
+
+    captured = capsys.readouterr()
+    result = captured.err
+
+    error_text = "unrecognized arguments: --invalid"
+    expect(result).to(contain(error_text))
