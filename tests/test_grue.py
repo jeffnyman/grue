@@ -127,3 +127,24 @@ def test_unable_to_locate_program() -> None:
 
     error_text = "Unable to locate the program: program.z5"
     expect(str(exc_info.value)).to(contain(error_text))
+
+
+def test_unable_to_access_program(tmp_path) -> None:
+    """Raises an eception when a program can't be accessed."""
+
+    import shutil
+    from grue.program import Program, UnableToAccessProgramError
+
+    program = Program("zork1.z3")
+
+    inaccessible = tmp_path / "inaccessible"
+    program.file = inaccessible
+
+    inaccessible.mkdir()
+
+    error_text = f"Unable to access the program: {inaccessible.name}"
+
+    with pytest.raises(UnableToAccessProgramError, match=error_text):
+        program._read_data()
+
+    shutil.rmtree(inaccessible)
