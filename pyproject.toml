@@ -25,6 +25,10 @@ classifiers = [
 [tool.poetry.scripts]
 grue = "grue.__main__:main"
 
+[tool.pytest.ini_options]
+addopts = "--spec"
+spec_test_format = "{result} {docstring_summary}"
+
 [tool.poetry.dependencies]
 python = "^3.8.2"
 
@@ -34,6 +38,7 @@ flake8 = "^6.0.0"
 mypy = "^1.4.1"
 invoke = "^2.1.3"
 pytest = "^7.4.0"
+pytest-spec = "^3.2.0"
 
 [build-system]
 requires = ["poetry-core"]
