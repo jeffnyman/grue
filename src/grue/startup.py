@@ -4,6 +4,7 @@ from typing import Optional
 
 from grue import __version__
 from grue.cli import process_arguments
+from grue.program import Program
 
 
 def main(args: Optional[list] = None) -> int:
@@ -17,8 +18,13 @@ def main(args: Optional[list] = None) -> int:
     cli = process_arguments(args)
     setup_logging(cli["log"])
     display_arguments(cli)
+    setup_grue(cli)
 
     return 0
+
+
+def setup_grue(cli: dict) -> None:
+    Program(cli["program"])
 
 
 def check_python_version() -> None:
