@@ -114,3 +114,16 @@ def test_handle_invalid_arguments(capsys) -> None:
 
     error_text = "unrecognized arguments: --invalid"
     expect(result).to(contain(error_text))
+
+
+def test_unable_to_locate_program() -> None:
+    """Raises an exception when a program can't be located."""
+
+    from grue.__main__ import main
+    from grue.program import UnableToLocateProgramError
+
+    with pytest.raises(UnableToLocateProgramError) as exc_info:
+        main(["program.z5"])
+
+    error_text = "Unable to locate the program: program.z5"
+    expect(str(exc_info.value)).to(contain(error_text))
