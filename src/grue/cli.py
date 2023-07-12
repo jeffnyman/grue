@@ -5,7 +5,7 @@ import grue.__version__
 log_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
-def process_arguments(args: list) -> None:
+def process_arguments(args: list) -> dict:
     parser = argparse.ArgumentParser(
         prog="quendor",
         description="Execute a zcode program on the Z-Machine",
@@ -27,4 +27,4 @@ def process_arguments(args: list) -> None:
         "-v", "--version", action="version", version=f"Version: {grue.__version__}"
     )
 
-    parser.parse_args(args)
+    return vars(parser.parse_args(args))
