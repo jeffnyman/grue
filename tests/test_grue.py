@@ -16,7 +16,7 @@ def test_grue_startup_banner(capsys) -> None:
     from grue.__main__ import main
     from grue import __version__
 
-    main()
+    main(["zork1.z3"])
 
     captured = capsys.readouterr()
     result = captured.out
@@ -84,3 +84,18 @@ def test_generate_logs(caplog) -> None:
         display_arguments({"log": "DEBUG"})
 
     expect(caplog.text).to(contain("Argument count", "Parsed arguments"))
+
+
+def test_no_program_provided(capsys) -> None:
+    """Indicates when a program has not been provided."""
+
+    from grue.__main__ import main
+
+    with pytest.raises(SystemExit):
+        main()
+
+    captured = capsys.readouterr()
+    result = captured.err
+
+    error_text = "the following arguments are required: program"
+    expect(result).to(contain(error_text))

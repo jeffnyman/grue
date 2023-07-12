@@ -12,6 +12,8 @@ def process_arguments(args: list) -> dict:
         epilog="Watch out for Grues!",
     )
 
+    parser.add_argument("program", help="zcode program to load")
+
     parser.add_argument(
         "--log",
         default="ERROR",
