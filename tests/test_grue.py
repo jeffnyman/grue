@@ -10,13 +10,13 @@ def test_package_version() -> None:
     expect(__version__).to(equal("0.1.0"))
 
 
-def test_grue_startup_banner(capsys) -> None:
+def test_grue_startup_banner(capsys, zork1_z3) -> None:
     """Provides a minimal banner on startup."""
 
     from grue.__main__ import main
     from grue import __version__
 
-    main(["zork1.z3"])
+    main([str(zork1_z3)])
 
     captured = capsys.readouterr()
     result = captured.out
@@ -101,13 +101,13 @@ def test_no_program_provided(capsys) -> None:
     expect(result).to(contain(error_text))
 
 
-def test_handle_invalid_arguments(capsys) -> None:
+def test_handle_invalid_arguments(capsys, zork1_z3) -> None:
     """Indicates when an invalid argument is provided."""
 
     from grue.__main__ import main
 
     with pytest.raises(SystemExit):
-        main(["zork1.z3", "--invalid"])
+        main([str(zork1_z3), "--invalid"])
 
     captured = capsys.readouterr()
     result = captured.err
@@ -129,13 +129,13 @@ def test_unable_to_locate_program() -> None:
     expect(str(exc_info.value)).to(contain(error_text))
 
 
-def test_unable_to_access_program(tmp_path) -> None:
+def test_unable_to_access_program(tmp_path, zork1_z3) -> None:
     """Raises an eception when a program can't be accessed."""
 
     import shutil
     from grue.program import Program, UnableToAccessProgramError
 
-    program = Program("zork1.z3")
+    program = Program(zork1_z3)
 
     inaccessible = tmp_path / "inaccessible"
     program.file = inaccessible
