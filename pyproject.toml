@@ -29,6 +29,12 @@ grue = "grue.__main__:main"
 addopts = "--spec"
 spec_test_format = "{result} {docstring_summary}"
 
+[tool.mypy]
+
+[[tool.mypy.overrides]]
+module = "expects.*"
+ignore_missing_imports = "true"
+
 [tool.poetry.dependencies]
 python = "^3.8.2"
 
@@ -39,6 +45,7 @@ mypy = "^1.4.1"
 invoke = "^2.1.3"
 pytest = "^7.4.0"
 pytest-spec = "^3.2.0"
+expects = "^0.9.0"
 
 [build-system]
 requires = ["poetry-core"]
