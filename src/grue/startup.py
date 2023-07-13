@@ -5,6 +5,7 @@ from typing import Optional
 from grue import __version__
 from grue.cli import process_arguments
 from grue.program import Program
+from grue.memory import Memory
 
 
 def main(args: Optional[list] = None) -> int:
@@ -24,7 +25,8 @@ def main(args: Optional[list] = None) -> int:
 
 
 def setup_grue(cli: dict) -> None:
-    Program(cli["program"])
+    program = Program(cli["program"])
+    Memory(program.data)
 
 
 def check_python_version() -> None:
