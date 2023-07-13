@@ -178,3 +178,13 @@ def test_read_zcode_version(zork1_z3_data) -> None:
     memory = Memory(zork1_z3_data)
 
     expect(memory.version).to(equal(3))
+
+
+def test_read_starting_location(zork1_z3_data) -> None:
+    """Reads starting address for zcode execution (version 3)."""
+
+    from grue.memory import Memory
+
+    memory = Memory(zork1_z3_data)
+
+    expect(memory.pc).to(equal(0x4F05))
