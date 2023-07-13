@@ -41,7 +41,7 @@ class Program:
         paths = [Path(path) for path in paths]
 
         for path in paths:
-            logging.info(f"Checking: {Path(path).joinpath(self._program)}")
+            logging.debug(f"Checking: {Path(path).joinpath(self._program)}")
 
             file_path = path.joinpath(self._program)
 

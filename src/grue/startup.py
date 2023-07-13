@@ -26,7 +26,10 @@ def main(args: Optional[list] = None) -> int:
 
 def setup_grue(cli: dict) -> None:
     program = Program(cli["program"])
-    Memory(program.data)
+    logging.info(program.file.name)
+
+    memory = Memory(program.data)
+    memory.details()
 
 
 def check_python_version() -> None:
