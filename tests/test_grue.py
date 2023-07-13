@@ -148,3 +148,23 @@ def test_unable_to_access_program(tmp_path, zork1_z3) -> None:
         program._read_data()
 
     shutil.rmtree(inaccessible)
+
+
+def test_read_byte(zork1_z3_data) -> None:
+    """Reads a byte address from memory."""
+
+    from grue.memory import Memory
+
+    memory = Memory(zork1_z3_data)
+
+    expect(memory.read_byte(0)).to(equal(3))
+
+
+def test_read_zcode_version(zork1_z3_data) -> None:
+    """Reads the zcode version from memory."""
+
+    from grue.memory import Memory
+
+    memory = Memory(zork1_z3_data)
+
+    expect(memory.version).to(equal(3))
