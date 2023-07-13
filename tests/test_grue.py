@@ -10,21 +10,6 @@ def test_package_version() -> None:
     expect(__version__).to(equal("0.1.0"))
 
 
-def test_grue_startup_banner(capsys, zork1_z3) -> None:
-    """Provides a minimal banner on startup."""
-
-    from grue.__main__ import main
-    from grue import __version__
-
-    main([str(zork1_z3)])
-
-    captured = capsys.readouterr()
-    result = captured.out
-
-    banner_text = f"Grue Z-Machine Interpreter (Version: {__version__})"
-    expect(result).to(contain(banner_text))
-
-
 def test_bad_python_version(monkeypatch, capsys) -> None:
     """Checks if Python version requirement is met."""
 
@@ -58,21 +43,6 @@ def test_grue_version_display(capsys) -> None:
     expect(result).to(contain(verison_text))
 
 
-def test_handle_invalid_log_level(capsys) -> None:
-    """Indicates when an invalid log level is specified."""
-
-    from grue.__main__ import main
-
-    with pytest.raises(SystemExit):
-        main(["--log", "LOTS"])
-
-    captured = capsys.readouterr()
-    result = captured.err
-
-    error_text = "invalid choice: 'LOTS'"
-    expect(result).to(contain(error_text))
-
-
 def test_generate_logs(caplog) -> None:
     """Displays logs based on log levels."""
 
@@ -84,49 +54,6 @@ def test_generate_logs(caplog) -> None:
         display_arguments({"log": "DEBUG"})
 
     expect(caplog.text).to(contain("Argument count", "Parsed arguments"))
-
-
-def test_no_program_provided(capsys) -> None:
-    """Indicates when a program has not been provided."""
-
-    from grue.__main__ import main
-
-    with pytest.raises(SystemExit):
-        main()
-
-    captured = capsys.readouterr()
-    result = captured.err
-
-    error_text = "the following arguments are required: program"
-    expect(result).to(contain(error_text))
-
-
-def test_handle_invalid_arguments(capsys, zork1_z3) -> None:
-    """Indicates when an invalid argument is provided."""
-
-    from grue.__main__ import main
-
-    with pytest.raises(SystemExit):
-        main([str(zork1_z3), "--invalid"])
-
-    captured = capsys.readouterr()
-    result = captured.err
-
-    error_text = "unrecognized arguments: --invalid"
-    expect(result).to(contain(error_text))
-
-
-def test_unable_to_locate_program() -> None:
-    """Raises an exception when a program can't be located."""
-
-    from grue.__main__ import main
-    from grue.program import UnableToLocateProgramError
-
-    with pytest.raises(UnableToLocateProgramError) as exc_info:
-        main(["program.z5"])
-
-    error_text = "Unable to locate the program: program.z5"
-    expect(str(exc_info.value)).to(contain(error_text))
 
 
 def test_unable_to_access_program(tmp_path, zork1_z3) -> None:
@@ -148,43 +75,3 @@ def test_unable_to_access_program(tmp_path, zork1_z3) -> None:
         program._read_data()
 
     shutil.rmtree(inaccessible)
-
-
-def test_read_byte(zork1_z3_data) -> None:
-    """Reads a byte address from memory."""
-
-    from grue.memory import Memory
-
-    memory = Memory(zork1_z3_data)
-
-    expect(memory.read_byte(0)).to(equal(3))
-
-
-def test_read_word(zork1_z3_data) -> None:
-    """Reads a two-byte address from memory."""
-
-    from grue.memory import Memory
-
-    memory = Memory(zork1_z3_data)
-
-    expect(memory.read_word(0x06)).to(equal(0x4F05))
-
-
-def test_read_zcode_version(zork1_z3_data) -> None:
-    """Reads the zcode version from memory."""
-
-    from grue.memory import Memory
-
-    memory = Memory(zork1_z3_data)
-
-    expect(memory.version).to(equal(3))
-
-
-def test_read_starting_location(zork1_z3_data) -> None:
-    """Reads starting address for zcode execution (version 3)."""
-
-    from grue.memory import Memory
-
-    memory = Memory(zork1_z3_data)
-
-    expect(memory.pc).to(equal(0x4F05))
