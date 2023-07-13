@@ -11,3 +11,6 @@ class Memory:
 
     def read_byte(self, offset: int) -> int:
         return self.data[offset]
+
+    def read_word(self, offset: int) -> int:
+        return (self.data[offset] << 8) | self.data[offset + 1]
