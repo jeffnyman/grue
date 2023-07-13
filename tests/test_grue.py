@@ -160,6 +160,16 @@ def test_read_byte(zork1_z3_data) -> None:
     expect(memory.read_byte(0)).to(equal(3))
 
 
+def test_read_word(zork1_z3_data) -> None:
+    """Reads a two-byte address from memory."""
+
+    from grue.memory import Memory
+
+    memory = Memory(zork1_z3_data)
+
+    expect(memory.read_word(0x06)).to(equal(0x4F05))
+
+
 def test_read_zcode_version(zork1_z3_data) -> None:
     """Reads the zcode version from memory."""
 
